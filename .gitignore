@@ -1,0 +1,17 @@
+# Original source files
+Site/
+
+# Windows zone identifier files
+*:Zone.Identifier
+
+# IDE / workspace
+*.code-workspace
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Old root-level media (moved to assets/)
+/Photo_*.jpg
+/Video_*.mov
