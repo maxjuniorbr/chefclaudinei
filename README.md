@@ -8,7 +8,7 @@ Brazilian BBQ Catering one-page website.
 
 ## About
 
-A single-page website for Chef Claudinei's Brazilian churrasco and catering services. Built with pure HTML, CSS, and vanilla JavaScript — no frameworks or dependencies.
+A single-page website for Chef Claudinei's Brazilian churrasco and catering services. Built with pure HTML, CSS, and vanilla JavaScript - no frameworks or dependencies.
 
 ## Structure
 
