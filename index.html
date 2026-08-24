@@ -20,6 +20,11 @@
 @font-face { font-family: 'Montserrat'; font-style: normal; font-weight: 400 600; font-display: swap; src: url(assets/fonts/montserrat.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Every img carries width/height attributes so the browser can reserve the box
+   before it loads. Those attributes are presentational hints, so a rule that
+   sets only the width would leave the intrinsic height in place and stretch the
+   picture - this base rule is what keeps that from happening. */
+img { max-width: 100%; height: auto; }
 :root {
   --black: #0d0b08;
   --dark: #151209;
@@ -116,7 +121,7 @@ section { padding: 6.5rem 2rem; }
 .gallery-header { margin-bottom: 3rem; }
 .gallery-masonry { columns: 4; column-gap: 8px; }
 .gallery-item { break-inside: avoid; margin-bottom: 8px; overflow: hidden; position: relative; cursor: pointer; }
-.gallery-item img { width: 100%; display: block; transition: transform 0.5s ease, filter 0.4s ease; filter: brightness(0.88); }
+.gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.5s ease, filter 0.4s ease; filter: brightness(0.88); }
 .gallery-item:hover img { transform: scale(1.04); filter: brightness(1.05); }
 .gallery-item::after { content: ''; position: absolute; inset: 0; background: rgba(201,151,58,0); transition: background 0.3s; }
 .gallery-item:hover::after { background: rgba(201,151,58,0.07); }
@@ -186,21 +191,24 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 
 <!-- HERO -->
 <section class="hero">
+  <!-- Decorative mosaic: 300x440 tiles, webp only. They sit at 22% opacity
+     under the overlay, so if webp ever failed the hero still reads - not
+     worth shipping 14 jpg duplicates for a background. -->
   <div class="hero-mosaic">
-    <img src="assets/img/chef-grilling-outdoor.jpg" alt="">
-    <img src="assets/img/skewers-picanha-linguica.jpg" alt="">
-    <img src="assets/img/skewers-peppers-closeup.jpg" alt="">
-    <img src="assets/img/fruit-platter-tropical.jpg" alt="">
-    <img src="assets/img/picanha-skewer-closeup.jpg" alt="">
-    <img src="assets/img/grill-sausage-peppers.jpg" alt="">
-    <img src="assets/img/flame-grilled-meat.jpg" alt="">
-    <img src="assets/img/premium-steaks-raw.jpg" alt="">
-    <img src="assets/img/charcuterie-italian-spread.jpg" alt="">
-    <img src="assets/img/bread-cheese-table.jpg" alt="">
-    <img src="assets/img/grazing-table-spread.jpg" alt="">
-    <img src="assets/img/fruit-display-colorful.jpg" alt="">
-    <img src="assets/img/pineapple-melon-centerpiece.jpg" alt="">
-    <img src="assets/img/team-portrait.jpg" alt="">
+    <img src="assets/img/tile/chef-grilling-outdoor.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/skewers-picanha-linguica.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/skewers-peppers-closeup.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/fruit-platter-tropical.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/picanha-skewer-closeup.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/grill-sausage-peppers.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/flame-grilled-meat.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/premium-steaks-raw.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/charcuterie-italian-spread.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/bread-cheese-table.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/grazing-table-spread.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/fruit-display-colorful.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/pineapple-melon-centerpiece.webp" alt="" width="300" height="440" decoding="async">
+    <img src="assets/img/tile/team-portrait.webp" alt="" width="300" height="440" decoding="async">
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-glow"></div>
@@ -221,8 +229,16 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   <div class="inner">
     <div class="about-grid">
       <div class="about-imgs">
-        <img class="img-main" src="assets/img/team-portrait.jpg" alt="Chef Claudinei and team wearing Brazilian flag aprons">
-        <img class="img-accent" src="assets/img/chef-grilling-outdoor.jpg" alt="Chef grilling churrasco at outdoor event">
+        <picture>
+          <source type="image/webp" srcset="assets/img/team-portrait-600.webp 600w" sizes="(max-width: 900px) 70vw, 440px">
+          <img class="img-main" src="assets/img/team-portrait.jpg" width="800" height="533"
+               loading="lazy" decoding="async" alt="Chef Claudinei and team wearing Brazilian flag aprons">
+        </picture>
+        <picture>
+          <source type="image/webp" srcset="assets/img/chef-grilling-outdoor-600.webp 600w, assets/img/chef-grilling-outdoor-1000.webp 1000w" sizes="(max-width: 900px) 55vw, 350px">
+          <img class="img-accent" src="assets/img/chef-grilling-outdoor.jpg" width="1179" height="1648"
+               loading="lazy" decoding="async" alt="Chef grilling churrasco at outdoor event">
+        </picture>
       </div>
       <div class="about-text">
         <div class="section-label">Our Story</div>
@@ -257,7 +273,11 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
     </div>
     <div class="services-grid">
       <div class="service-card">
-        <img src="assets/img/grill-sausage-peppers.jpg" alt="Linguiça, peppers and grilled meats on the churrasco grill">
+        <picture>
+          <source type="image/webp" srcset="assets/img/grill-sausage-peppers-600.webp 600w, assets/img/grill-sausage-peppers-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
+          <img src="assets/img/grill-sausage-peppers.jpg" width="1174" height="2048"
+               loading="lazy" decoding="async" alt="Linguiça, peppers and grilled meats on the churrasco grill">
+        </picture>
         <div class="service-card-overlay">
           <div class="service-number">01</div>
           <div class="service-name">Brazilian Churrasco</div>
@@ -266,7 +286,11 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
         </div>
       </div>
       <div class="service-card">
-        <img src="assets/img/grazing-table-spread.jpg" alt="Full grazing table with artisan breads, cured meats and preserves">
+        <picture>
+          <source type="image/webp" srcset="assets/img/grazing-table-spread-600.webp 600w, assets/img/grazing-table-spread-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
+          <img src="assets/img/grazing-table-spread.jpg" width="1160" height="2048"
+               loading="lazy" decoding="async" alt="Full grazing table with artisan breads, cured meats and preserves">
+        </picture>
         <div class="service-card-overlay">
           <div class="service-number">02</div>
           <div class="service-name">Charcuterie &amp; Grazing Boards</div>
@@ -275,7 +299,11 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
         </div>
       </div>
       <div class="service-card">
-        <img src="assets/img/fruit-platter-tropical.jpg" alt="Tropical fruit platter on Chef Claudinei branded board">
+        <picture>
+          <source type="image/webp" srcset="assets/img/fruit-platter-tropical-600.webp 600w, assets/img/fruit-platter-tropical-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
+          <img src="assets/img/fruit-platter-tropical.jpg" width="1160" height="2048"
+               loading="lazy" decoding="async" alt="Tropical fruit platter on Chef Claudinei branded board">
+        </picture>
         <div class="service-card-overlay">
           <div class="service-number">03</div>
           <div class="service-name">Fruit &amp; Dessert Displays</div>
@@ -295,18 +323,66 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
       <h2 class="section-title">The <em>Experience</em></h2>
     </div>
     <div class="gallery-masonry">
-      <div class="gallery-item"><img src="assets/img/chef-grilling-outdoor.jpg" alt="Chef grilling churrasco at outdoor event"></div>
-      <div class="gallery-item"><img src="assets/img/fruit-platter-tropical.jpg" alt="Tropical fruit platter with seasonal fruits"></div>
-      <div class="gallery-item"><img src="assets/img/premium-steaks-raw.jpg" alt="Premium raw steaks on the rack"></div>
-      <div class="gallery-item"><img src="assets/img/fruit-display-colorful.jpg" alt="Colorful fruit display with berries and macarons"></div>
-      <div class="gallery-item"><img src="assets/img/skewers-picanha-linguica.jpg" alt="Picanha and linguiça skewers on the grill"></div>
-      <div class="gallery-item"><img src="assets/img/charcuterie-italian-spread.jpg" alt="Charcuterie spread with cheeses, salami and artisan pasta"></div>
-      <div class="gallery-item"><img src="assets/img/picanha-skewer-closeup.jpg" alt="Close-up of picanha skewer over charcoal"></div>
-      <div class="gallery-item"><img src="assets/img/pineapple-melon-centerpiece.jpg" alt="Pineapple and melon fruit centerpiece"></div>
-      <div class="gallery-item"><img src="assets/img/skewers-peppers-closeup.jpg" alt="Grilled skewers with peppers and meats"></div>
-      <div class="gallery-item"><img src="assets/img/bread-cheese-table.jpg" alt="Artisan bread, cheese and charcuterie table"></div>
-      <div class="gallery-item"><img src="assets/img/flame-grilled-meat.jpg" alt="Flame-grilled meat close-up over open fire"></div>
-      <div class="gallery-item"><img src="assets/img/team-portrait.jpg" alt="Chef Claudinei and team in Brazilian flag aprons"></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/chef-grilling-outdoor-600.webp 600w, assets/img/chef-grilling-outdoor-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/chef-grilling-outdoor.jpg" width="1179" height="1648"
+             loading="lazy" decoding="async" alt="Chef grilling churrasco at outdoor event">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/fruit-platter-tropical-600.webp 600w, assets/img/fruit-platter-tropical-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/fruit-platter-tropical.jpg" width="1160" height="2048"
+             loading="lazy" decoding="async" alt="Tropical fruit platter with seasonal fruits">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/premium-steaks-raw-600.webp 600w, assets/img/premium-steaks-raw-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/premium-steaks-raw.jpg" width="1131" height="757"
+             loading="lazy" decoding="async" alt="Premium raw steaks on the rack">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/fruit-display-colorful-600.webp 600w, assets/img/fruit-display-colorful-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/fruit-display-colorful.jpg" width="1179" height="2037"
+             loading="lazy" decoding="async" alt="Colorful fruit display with berries and macarons">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/skewers-picanha-linguica-600.webp 600w, assets/img/skewers-picanha-linguica-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/skewers-picanha-linguica.jpg" width="1179" height="1860"
+             loading="lazy" decoding="async" alt="Picanha and linguiça skewers on the grill">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/charcuterie-italian-spread-600.webp 600w, assets/img/charcuterie-italian-spread-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/charcuterie-italian-spread.jpg" width="1166" height="2048"
+             loading="lazy" decoding="async" alt="Charcuterie spread with cheeses, salami and artisan pasta">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/picanha-skewer-closeup-600.webp 600w, assets/img/picanha-skewer-closeup-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/picanha-skewer-closeup.jpg" width="1179" height="1913"
+             loading="lazy" decoding="async" alt="Close-up of picanha skewer over charcoal">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/pineapple-melon-centerpiece-600.webp 600w, assets/img/pineapple-melon-centerpiece-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/pineapple-melon-centerpiece.jpg" width="1179" height="1156"
+             loading="lazy" decoding="async" alt="Pineapple and melon fruit centerpiece">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/skewers-peppers-closeup-600.webp 600w, assets/img/skewers-peppers-closeup-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/skewers-peppers-closeup.jpg" width="1179" height="1945"
+             loading="lazy" decoding="async" alt="Grilled skewers with peppers and meats">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/bread-cheese-table-600.webp 600w, assets/img/bread-cheese-table-1000.webp 1000w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/bread-cheese-table.jpg" width="1166" height="2048"
+             loading="lazy" decoding="async" alt="Artisan bread, cheese and charcuterie table">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/flame-grilled-meat-600.webp 600w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/flame-grilled-meat.jpg" width="960" height="1526"
+             loading="lazy" decoding="async" alt="Flame-grilled meat close-up over open fire">
+      </picture></div>
+      <div class="gallery-item"><picture>
+        <source type="image/webp" srcset="assets/img/team-portrait-600.webp 600w" sizes="(max-width: 900px) 50vw, 25vw">
+        <img src="assets/img/team-portrait.jpg" width="800" height="533"
+             loading="lazy" decoding="async" alt="Chef Claudinei and team in Brazilian flag aprons">
+      </picture></div>
     </div>
   </div>
 </section>
