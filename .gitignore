@@ -1,9 +1,3 @@
-# Original source files
-Site/
-
-# Windows zone identifier files
-*:Zone.Identifier
-
 # IDE / workspace
 *.code-workspace
 .vscode/
@@ -12,6 +6,10 @@ Site/
 .DS_Store
 Thumbs.db
 
-# Old root-level media (moved to assets/)
-/Photo_*.jpg
-/Video_*.mov
+# Claude Code - local maintainer tooling, stays out of the public repo
+CLAUDE.md
+.claude/
+.mcp.json
+
+# snapshots the Playwright MCP writes to the root - Pages serves the root
+.playwright-mcp/
