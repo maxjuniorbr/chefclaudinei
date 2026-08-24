@@ -74,6 +74,14 @@ nav.scrolled { background: rgba(13,11,8,0.97) !important; border-bottom: 1px sol
 .nav-links a { font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,230,211,0.75); text-decoration: none; transition: color 0.2s; }
 .nav-links a:hover { color: var(--gold); }
 
+/* Menu button: only shows while the `js` class is on <html>, which means the
+   script ran to the end. Without it the plain list stays visible and clickable. */
+.menu-btn { display: none; background: none; border: 0; padding: 6px; cursor: pointer; flex-direction: column; gap: 4px; }
+.menu-btn span { display: block; width: 22px; height: 1.5px; background: var(--gold); transition: transform 0.25s cubic-bezier(.22,.61,.36,1), opacity 0.2s; }
+.menu-btn.is-open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.menu-btn.is-open span:nth-child(2) { opacity: 0; }
+.menu-btn.is-open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
 .skip-link { position: absolute; top: 0; left: -9999px; z-index: 300; background: var(--gold); color: var(--black); font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.9rem 1.4rem; text-decoration: none; }
 .skip-link:focus { left: 0; }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
@@ -189,8 +197,15 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .service-desc { max-height: 120px; opacity: 1; }
 }
 @media (max-width: 600px) {
-  nav { padding: 1rem 1.2rem; }
-  .nav-links { display: none; }
+  nav { padding: 1rem 1.2rem; flex-wrap: wrap; row-gap: 0.6rem; }
+  /* no JS: the list wraps onto a second line and stays reachable */
+  .nav-links { gap: 0.9rem 1.1rem; flex-wrap: wrap; justify-content: flex-end; }
+  /* with JS: it becomes a panel under the bar, opened by the button */
+  .js .menu-btn { display: flex; }
+  .js .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; background: rgba(13,11,8,0.98); border-bottom: 1px solid rgba(201,151,58,0.18); }
+  .js .nav-links.open { display: flex; }
+  .js .nav-links li { border-top: 1px solid rgba(201,151,58,0.1); }
+  .js .nav-links a { display: block; padding: 1.05rem 1.2rem; font-size: 0.72rem; }
   .services-grid { grid-template-columns: 1fr; }
   .gallery-masonry { columns: 2; }
   section { padding: 4.5rem 1.2rem; }
@@ -213,6 +228,24 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .btn:hover, .gallery-item:hover img, .service-card:hover img { transform: none; }
 }
 </style>
+
+<script>
+document.documentElement.className += ' js';
+// Safety net. The `js` class hides things: below 600px the nav list is replaced
+// by a panel that only the menu button can open. If the script at the bottom of
+// the page never finishes, that button is dead and the five links are gone on
+// mobile. So the script raises a flag as its last instruction; if the flag is
+// not up once the DOM is parsed, we drop the class and the page falls back to a
+// plain, navigable list.
+//
+// This checks STATE, not errors: sniffing window.onerror would confuse a failing
+// gtag, a browser extension or a cross-origin "Script error." with our own bug.
+addEventListener('DOMContentLoaded', function () {
+  if (document.documentElement.dataset.ready !== 'ok') {
+    document.documentElement.classList.remove('js');
+  }
+});
+</script>
 
 <script type="application/ld+json">
 {
@@ -302,7 +335,11 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 
 <nav id="navbar">
   <a href="#top" class="nav-logo">Chef Claudinei</a>
-  <ul class="nav-links">
+  <button id="menu-btn" class="menu-btn" type="button"
+          aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#gallery">Gallery</a></li>
@@ -576,6 +613,35 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   addEventListener('scroll', function () {
     navbar.classList.toggle('scrolled', scrollY > 60);
   }, { passive: true });
+
+  // Mobile menu. Four ways to close it, and aria-expanded/aria-label follow all
+  // four - that is the part that rots in silence when someone adds a fifth.
+  var btn = document.getElementById('menu-btn');
+  var list = document.getElementById('nav-links');
+
+  function menu(open) {
+    list.classList.toggle('open', open);
+    btn.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    menu(!list.classList.contains('open'));
+  });
+  list.addEventListener('click', function (e) {          // 1. tapping a link
+    if (e.target.closest('a')) { menu(false); }
+  });
+  document.addEventListener('click', function (e) {      // 2. tapping outside
+    if (list.classList.contains('open') && !list.contains(e.target)) { menu(false); }
+  });
+  addEventListener('keydown', function (e) {             // 3. Escape returns focus
+    if (e.key === 'Escape' && list.classList.contains('open')) { menu(false); btn.focus(); }
+  });
+  addEventListener('resize', function () {               // 4. back above the breakpoint
+    if (innerWidth > 600) { menu(false); }
+  });
 
   var year = document.getElementById('year');
   if (year) { year.textContent = new Date().getFullYear(); }
