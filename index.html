@@ -363,7 +363,7 @@ addEventListener('DOMContentLoaded', function () {
 </nav>
 
 <!-- HERO -->
-<main id="main">
+<main id="main" tabindex="-1">
 <section class="hero" id="top">
   <!-- Decorative mosaic: 300x440 tiles, webp only. They sit at 22% opacity
      under the overlay, so if webp ever failed the hero still reads - not
@@ -571,6 +571,7 @@ addEventListener('DOMContentLoaded', function () {
         <!-- preload="none" on purpose: nothing is fetched until someone presses
              play, and the poster carries the frame until then. -->
         <video controls playsinline preload="none"
+               title="Chef Claudinei churrasco highlight reel"
                width="1280" height="720"
                poster="assets/img/video-poster.jpg">
           <source src="assets/video/bbq-highlight.mp4" type="video/mp4">
