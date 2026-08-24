@@ -247,6 +247,14 @@ addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SHR8YHQGHB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SHR8YHQGHB');
+</script>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -665,6 +673,25 @@ addEventListener('DOMContentLoaded', function () {
       io.observe(el);
     });
   }
+
+  // Conversion: one delegated listener covers every phone, SMS and WhatsApp
+  // link on the page, including ones added later. Nothing is tagged in the
+  // markup - the location is read from the DOM.
+  function linkLocation(a) {
+    if (a.closest('nav')) { return 'header'; }
+    if (a.closest('footer')) { return 'footer'; }
+    var section = a.closest('section[id]');
+    return section ? section.id : 'other';
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a[href^="tel:"], a[href^="sms:"], a[href*="wa.me"]') : null;
+    if (!a || typeof gtag !== 'function') { return; }
+    gtag('event', 'generate_lead', {
+      method: a.href.indexOf('wa.me') > -1 ? 'whatsapp' : (a.href.indexOf('sms:') === 0 ? 'sms' : 'phone'),
+      link_location: linkLocation(a)
+    });
+  });
 
   // Last instruction on purpose: the flag means "the whole script ran". Raise it
   // earlier and a runtime error in the middle would leave the `js` class up with
