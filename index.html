@@ -140,7 +140,7 @@ section { padding: 6.5rem 2rem; }
 #services { background: var(--black); }
 .services-header { margin-bottom: 4rem; }
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-.service-card { position: relative; overflow: hidden; height: 440px; cursor: pointer; }
+.service-card { position: relative; overflow: hidden; height: 440px; }
 .service-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease, filter 0.5s ease; filter: brightness(0.65) sepia(15%); }
 .service-card:hover img { transform: scale(1.06); filter: brightness(0.5) sepia(10%); }
 .service-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,11,8,0.92) 0%, rgba(13,11,8,0.2) 60%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; transition: background 0.4s; }
@@ -158,7 +158,7 @@ section { padding: 6.5rem 2rem; }
 #gallery { background: var(--dark); }
 .gallery-header { margin-bottom: 3rem; }
 .gallery-masonry { columns: 4; column-gap: 8px; }
-.gallery-item { break-inside: avoid; margin-bottom: 8px; overflow: hidden; position: relative; cursor: pointer; }
+.gallery-item { break-inside: avoid; margin-bottom: 8px; overflow: hidden; position: relative; }
 .gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.5s ease, filter 0.4s ease; filter: brightness(0.88); }
 .gallery-item:hover img { transform: scale(1.04); filter: brightness(1.05); }
 .gallery-item::after { content: ''; position: absolute; inset: 0; background: rgba(201,151,58,0); transition: background 0.3s; }
