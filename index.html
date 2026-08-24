@@ -74,6 +74,10 @@ nav.scrolled { background: rgba(13,11,8,0.97) !important; border-bottom: 1px sol
 .nav-links a { font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,230,211,0.75); text-decoration: none; transition: color 0.2s; }
 .nav-links a:hover { color: var(--gold); }
 
+.skip-link { position: absolute; top: 0; left: -9999px; z-index: 300; background: var(--gold); color: var(--black); font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.9rem 1.4rem; text-decoration: none; }
+.skip-link:focus { left: 0; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
 /* HERO */
 .hero { position: relative; height: 100vh; min-height: 520px; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
 .hero-mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 1fr 1fr; gap: 3px; opacity: 0.22; filter: sepia(25%); }
@@ -194,6 +198,20 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .hero-mosaic { grid-template-columns: repeat(4, 1fr); }
   .about-imgs { height: 280px; }
 }
+
+/* Reduced motion. One blanket rule on purpose: an enumerated list of animated
+   selectors ages badly, and a new element would silently ignore the setting.
+   The IntersectionObserver reveal is switched off in the script instead, since
+   it writes opacity inline and would win over anything declared here. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .btn:hover, .gallery-item:hover img, .service-card:hover img { transform: none; }
+}
 </style>
 
 <script type="application/ld+json">
@@ -280,8 +298,10 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 <body>
 
 <!-- NAVBAR -->
+<a class="skip-link" href="#main">Skip to content</a>
+
 <nav id="navbar">
-  <a href="#" class="nav-logo">Chef Claudinei</a>
+  <a href="#top" class="nav-logo">Chef Claudinei</a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
@@ -292,7 +312,8 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<main id="main">
+<section class="hero" id="top">
   <!-- Decorative mosaic: 300x440 tiles, webp only. They sit at 22% opacity
      under the overlay, so if webp ever failed the hero still reads - not
      worth shipping 14 jpg duplicates for a background. -->
@@ -529,6 +550,7 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
     </div>
   </div>
 </section>
+</main>
 
 <!-- FOOTER -->
 <footer>
@@ -547,6 +569,8 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 
 <script>
 (function () {
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // compact bar once the page scrolls
   var navbar = document.getElementById('navbar');
   addEventListener('scroll', function () {
@@ -556,7 +580,9 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   var year = document.getElementById('year');
   if (year) { year.textContent = new Date().getFullYear(); }
 
-  if ('IntersectionObserver' in window) {
+  // Scroll reveal. Off entirely under reduced motion: it writes opacity inline,
+  // so the CSS media query further up cannot undo it.
+  if (!reduced && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) { return; }
