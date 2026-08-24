@@ -186,7 +186,9 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; list-style: none; margin-bottom: 2rem; }
 .footer-links a { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .footer-links a:hover { color: var(--gold); }
-.footer-copy { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.12em; color: rgba(138,122,101,0.5); }
+/* Carries the phone number, so it is body text, not decoration: --muted at
+   0.68rem clears 4.5:1 where the old half-transparent 0.6rem sat at 2.02:1. */
+.footer-copy { font-family: 'Montserrat', sans-serif; font-size: 0.68rem; letter-spacing: 0.12em; color: var(--muted); }
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
