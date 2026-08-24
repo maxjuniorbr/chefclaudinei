@@ -187,8 +187,11 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 .footer-links a { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .footer-links a:hover { color: var(--gold); }
 /* Carries the phone number, so it is body text, not decoration: --muted at
-   0.68rem clears 4.5:1 where the old half-transparent 0.6rem sat at 2.02:1. */
+   0.68rem clears 4.5:1 where the old half-transparent 0.6rem sat at 2.02:1.
+   The number itself is a tel: link - underlined so it is not just a colour. */
 .footer-copy { font-family: 'Montserrat', sans-serif; font-size: 0.68rem; letter-spacing: 0.12em; color: var(--muted); }
+.footer-copy a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.footer-copy a:hover { color: var(--gold); }
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
@@ -619,7 +622,7 @@ addEventListener('DOMContentLoaded', function () {
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <div class="footer-copy">&copy; <span id="year">2026</span> Chef Claudinei. All rights reserved. &middot; (516) 477-1234</div>
+    <div class="footer-copy">&copy; <span id="year">2026</span> Chef Claudinei. All rights reserved. &middot; <a href="tel:+15164771234">(516) 477-1234</a></div>
   </div>
 </footer>
 
