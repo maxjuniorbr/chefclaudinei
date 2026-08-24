@@ -145,8 +145,10 @@ section { padding: 6.5rem 2rem; }
 .service-number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: rgba(201,151,58,0.18); line-height: 1; margin-bottom: 0.5rem; transition: color 0.4s; }
 .service-card:hover .service-number { color: rgba(201,151,58,0.35); }
 .service-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--warm-white); margin-bottom: 0.6rem; }
-.service-desc { font-size: 1rem; font-weight: 300; color: rgba(240,230,211,0.6); line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.4s ease; opacity: 0; }
-.service-card:hover .service-desc { max-height: 120px; opacity: 1; }
+/* Always visible. It used to be revealed on :hover, but the card is a plain
+   div with nothing focusable inside, so keyboard users had no way to reach the
+   text at all above 900px - and it is the same copy the JSON-LD duplicates. */
+.service-desc { font-size: 1rem; font-weight: 300; color: rgba(240,230,211,0.6); line-height: 1.7; }
 .service-tag { display: inline-block; margin-top: 1rem; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
 
 /* GALLERY */
@@ -194,7 +196,6 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .about-imgs { height: 360px; }
   .services-grid { grid-template-columns: 1fr 1fr; }
   .gallery-masonry { columns: 2; }
-  .service-desc { max-height: 120px; opacity: 1; }
 }
 @media (max-width: 600px) {
   nav { padding: 1rem 1.2rem; flex-wrap: wrap; row-gap: 0.6rem; }
