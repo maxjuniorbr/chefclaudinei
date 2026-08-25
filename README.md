@@ -9,7 +9,7 @@ Brazilian BBQ Catering one-page website.
 ## About
 
 A single-page website for Chef Claudinei's Brazilian churrasco and catering
-services, based on Long Island and serving events across New York. Built with
+services, based in Freeport and serving Long Island and New York City. Built with
 pure HTML, CSS, and vanilla JavaScript - no frameworks or dependencies.
 
 ## Structure
