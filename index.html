@@ -200,8 +200,32 @@ section { padding: 6.5rem 2rem; }
 .service-desc { font-size: 1rem; font-weight: 300; color: rgba(240,230,211,0.85); line-height: 1.7; }
 .service-tag { display: inline-block; margin-top: 1rem; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
 
+/* MENU */
+/* Five groups flowing through columns, not a grid. On a 3x2 grid the first
+   row stretched to the tallest group and left a 600px hole under the shortest
+   one; break-inside keeps each group whole and the columns pack. Same idiom as
+   .gallery-masonry further down. */
+#menu { background: var(--dark); }
+.menu-header { max-width: 640px; margin-bottom: 4rem; }
+.menu-grid { columns: 3; column-gap: 3rem; }
+.menu-col { break-inside: avoid; margin-bottom: 3.4rem; }
+.menu-group { font-family: 'Montserrat', sans-serif; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); padding-bottom: 0.85rem; border-bottom: 1px solid rgba(201,151,58,0.28); margin-bottom: 1.5rem; }
+.menu-list { list-style: none; display: flex; flex-direction: column; gap: 1.15rem; }
+/* The site is in English, so a dish is named in English unless the Portuguese
+   word IS its name here - picanha, feijoada and farofa are what an American
+   Brazilian steakhouse prints, while arroz and salada verde are just foreign
+   words for rice and salad. Maionese was the sharpest case: it reads as
+   mayonnaise in English and the dish is a potato salad. The second line is
+   always English - it translates a Portuguese name, or it is dropped. Putting
+   the Brazilian name there for an English-named dish just smuggled the same
+   foreign words back in one line lower. */
+.dish { display: block; font-size: 1.18rem; color: var(--cream); line-height: 1.35; }
+.gloss { display: block; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; letter-spacing: 0.09em; line-height: 1.5; color: var(--muted); margin-top: 0.2rem; }
+.menu-custom { margin-top: 4.5rem; padding-top: 3rem; border-top: 1px solid rgba(201,151,58,0.2); text-align: center; }
+.menu-custom p { font-size: 1.35rem; font-weight: 300; font-style: italic; color: var(--gold); margin-bottom: 2rem; }
+
 /* GALLERY */
-#gallery { background: var(--dark); }
+#gallery { background: var(--black); }
 .gallery-header { margin-bottom: 3rem; }
 .gallery-masonry { columns: 4; column-gap: 8px; }
 .gallery-item { break-inside: avoid; margin-bottom: 8px; overflow: hidden; position: relative; }
@@ -211,7 +235,7 @@ section { padding: 6.5rem 2rem; }
 .gallery-item:hover::after { background: rgba(201,151,58,0.07); }
 
 /* VIDEO */
-#video { background: var(--black); }
+#video { background: var(--dark); }
 .video-wrapper { margin-top: 2.5rem; position: relative; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; }
 .video-frame { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 2px solid rgba(201,151,58,0.25); }
 .video-frame video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0d0b08; }
@@ -253,6 +277,7 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .about-text { padding-right: 0; }
   .about-imgs { height: 360px; }
   .services-grid { grid-template-columns: 1fr 1fr; }
+  .menu-grid { columns: 2; }
   .gallery-masonry { columns: 2; }
 }
 @media (max-width: 600px) {
@@ -269,6 +294,8 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .js .nav-links li { border-top: 1px solid rgba(201,151,58,0.1); }
   .js .nav-links a { display: block; padding: 1.05rem 1.2rem; font-size: 0.72rem; }
   .services-grid { grid-template-columns: 1fr; }
+  .menu-grid { columns: 1; }
+  .menu-col { margin-bottom: 2.6rem; }
   .gallery-masonry { columns: 2; }
   section { padding: 4.5rem 1.2rem; }
   .stat-row { gap: 2rem; }
@@ -413,6 +440,7 @@ addEventListener('DOMContentLoaded', function () {
   <ul class="nav-links" id="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
+    <li><a href="#menu">Menu</a></li>
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#video">Video</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -538,6 +566,83 @@ addEventListener('DOMContentLoaded', function () {
           <span class="service-tag">Available Year-Round</span>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="inner">
+    <div class="menu-header">
+      <div class="section-label">The Menu</div>
+      <h2 class="section-title">Build Your <em>Feast</em></h2>
+      <p class="section-text">
+        Every event is built around what you like. Pick from the classics below,
+        mix and match, or tell us what you have in mind. We'll put together a
+        custom menu for your party.
+      </p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-col">
+        <h3 class="menu-group">Beef</h3>
+        <ul class="menu-list" role="list">
+          <li><span class="dish" lang="pt-BR">Picanha</span><span class="gloss">Top sirloin cap</span></li>
+          <li><span class="dish">NY Strip</span></li>
+          <li><span class="dish">Ribeye</span></li>
+          <li><span class="dish" lang="pt-BR">Fraldinha</span><span class="gloss">Bottom sirloin flap</span></li>
+          <li><span class="dish" lang="pt-BR">Alcatra</span><span class="gloss">Top sirloin</span></li>
+          <li><span class="dish" lang="pt-BR">Maminha</span><span class="gloss">Tri-tip</span></li>
+          <li><span class="dish">Bacon-Wrapped Filet Mignon</span></li>
+          <li><span class="dish">Tomahawk Ribeye</span><span class="gloss">Bone-in, cut thick</span></li>
+        </ul>
+      </div>
+      <div class="menu-col">
+        <h3 class="menu-group">Pork, Chicken &amp; Lamb</h3>
+        <ul class="menu-list" role="list">
+          <li><span class="dish" lang="pt-BR">Linguiça Toscana</span><span class="gloss">Brazilian pork sausage</span></li>
+          <li><span class="dish" lang="pt-BR">Linguiça Calabresa</span><span class="gloss">Smoked Brazilian sausage</span></li>
+          <li><span class="dish">Pork Ribs</span></li>
+          <li><span class="dish">Pork Loin</span></li>
+          <li><span class="dish">Pork Belly</span></li>
+          <li><span class="dish">Grilled Chicken Thighs</span></li>
+          <li><span class="dish">Bacon-Wrapped Chicken</span></li>
+          <li><span class="dish">Chicken Hearts</span><span class="gloss">A Brazilian steakhouse classic</span></li>
+          <li><span class="dish">Lamb Chops</span></li>
+        </ul>
+      </div>
+      <div class="menu-col">
+        <h3 class="menu-group">Meat-Free Grill</h3>
+        <ul class="menu-list" role="list">
+          <li><span class="dish" lang="pt-BR">Queijo Coalho</span><span class="gloss">Grilled Brazilian squeaky cheese</span></li>
+          <li><span class="dish" lang="pt-BR">Pão de Alho</span><span class="gloss">Brazilian-style garlic bread</span></li>
+          <li><span class="dish">Grilled Pineapple</span><span class="gloss">With cinnamon</span></li>
+          <li><span class="dish">Grilled Seasonal Vegetables</span></li>
+        </ul>
+      </div>
+      <div class="menu-col">
+        <h3 class="menu-group">Sides &amp; Salads</h3>
+        <ul class="menu-list" role="list">
+          <li><span class="dish">Brazilian White Rice</span></li>
+          <li><span class="dish" lang="pt-BR">Feijoada</span><span class="gloss">Black bean and pork stew</span></li>
+          <li><span class="dish" lang="pt-BR">Feijão Tropeiro</span><span class="gloss">Beans with bacon and cassava flour</span></li>
+          <li><span class="dish">Black Beans</span></li>
+          <li><span class="dish" lang="pt-BR">Farofa</span><span class="gloss">Toasted cassava flour</span></li>
+          <li><span class="dish" lang="pt-BR">Vinagrete</span><span class="gloss">Fresh tomato and onion salsa</span></li>
+          <li><span class="dish">Brazilian Potato Salad</span></li>
+          <li><span class="dish">Green Salad</span></li>
+        </ul>
+      </div>
+      <div class="menu-col">
+        <h3 class="menu-group">Boards &amp; Displays</h3>
+        <ul class="menu-list" role="list">
+          <li><span class="dish">Charcuterie Board</span></li>
+          <li><span class="dish">Fruit Display</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="menu-custom">
+      <p>Don't see your favorite? Just ask. We'll build the menu around it.</p>
+      <a href="#contact" class="btn btn-gold">Build My Menu</a>
     </div>
   </div>
 </section>
@@ -668,6 +773,7 @@ addEventListener('DOMContentLoaded', function () {
     <ul class="footer-links">
       <li><a href="#about">About</a></li>
       <li><a href="#services">Services</a></li>
+      <li><a href="#menu">Menu</a></li>
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -734,7 +840,7 @@ addEventListener('DOMContentLoaded', function () {
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.section-label, .section-title, .section-text, .about-imgs, .service-card, .gallery-item, .contact-item, .stat').forEach(function (el) {
+    document.querySelectorAll('.section-label, .section-title, .section-text, .about-imgs, .service-card, .menu-col, .gallery-item, .contact-item, .stat').forEach(function (el) {
       el.style.opacity = '0';
       el.style.transform = 'translateY(22px)';
       el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
