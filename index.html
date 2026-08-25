@@ -189,7 +189,10 @@ section { padding: 6.5rem 2rem; }
 /* Always visible. It used to be revealed on :hover, but the card is a plain
    div with nothing focusable inside, so keyboard users had no way to reach the
    text at all above 900px - and it is the same copy the JSON-LD duplicates. */
-.service-desc { font-size: 1rem; font-weight: 300; color: rgba(240,230,211,0.6); line-height: 1.7; }
+/* 0.85, not 0.6: the description sits over a photo, and the darker overlay
+   gradient only kicks in on :hover. At rest the worst card measured 3.31:1 -
+   below the 4.5:1 this size needs. 0.8 already clears it; 0.85 leaves room. */
+.service-desc { font-size: 1rem; font-weight: 300; color: rgba(240,230,211,0.85); line-height: 1.7; }
 .service-tag { display: inline-block; margin-top: 1rem; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
 
 /* GALLERY */
