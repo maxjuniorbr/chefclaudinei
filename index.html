@@ -258,7 +258,13 @@ section { padding: 6.5rem 2rem; }
 /* SERVICES */
 #services { background: var(--black); }
 .services-header { margin-bottom: 4rem; }
-.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+/* A real gap, not the 2px tile seam the hero mosaic uses. Three services
+   photographed against dark backgrounds merge into one strip when they touch,
+   and the eye stops counting three offers. The parallax made it worse: adjacent
+   photos drift at slightly different offsets, so a hairline seam reads as
+   tearing rather than depth. The gap is also what separates the cards
+   vertically once they stack below 900px. */
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 .service-card { position: relative; overflow: hidden; height: 440px; }
 .service-card img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--t-slow) var(--e-out), filter var(--t-out) var(--e-out); filter: brightness(0.65) sepia(15%); }
 .service-card:hover img { transform: scale(1.06); filter: brightness(0.5) sepia(10%); }
