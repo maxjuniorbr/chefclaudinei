@@ -586,6 +586,10 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    /* backwards fill holds the FROM state through its delay - zeroing
+       duration alone still leaves the prologue's staggered elements
+       (700ms-1600ms) invisible until their delay elapses. */
+    animation-delay: 0s !important;
   }
   .btn:hover, .gallery-item:hover img, .service-card:hover img { transform: none; }
 }
