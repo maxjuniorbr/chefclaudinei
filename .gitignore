@@ -13,3 +13,6 @@ CLAUDE.md
 
 # snapshots the Playwright MCP writes to the root - Pages serves the root
 .playwright-mcp/
+
+# scratch do subagent-driven-development - mesma razao do .playwright-mcp
+.superpowers/
