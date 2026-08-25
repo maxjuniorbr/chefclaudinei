@@ -62,6 +62,9 @@ html { scroll-behavior: smooth; }
 /* The bar is fixed, so an anchor has to stop short of it - otherwise the label
    of the target section lands underneath. 6rem clears the 74.5px mobile bar. */
 section[id] { scroll-margin-top: 6rem; }
+/* Without JS the nav wraps to two rows and measures ~146px, so the fallback
+   needs more room than the panel version does. */
+html:not(.js) section[id] { scroll-margin-top: 10rem; }
 body { background: var(--black); color: var(--cream); font-family: 'Cormorant Garamond', Georgia, serif; overflow-x: hidden; }
 
 /* NAV */
