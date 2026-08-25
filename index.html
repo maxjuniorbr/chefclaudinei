@@ -174,17 +174,32 @@ section { padding: 6.5rem 2rem; }
   50%      { transform: scale(1.06); opacity: 1; }
 }
 
-/* Entrance. Gated on `reveal-on`, which the script adds only where it actually
-   sets the observer up - so under reduced motion, without IntersectionObserver
-   or with a broken script, both elements are simply visible and unmoved. The
-   collage lands first and the chef arrives after it: he is the hero, and the
-   140ms gap is what makes him read as stepping forward instead of fading in. */
-.reveal-on .chef-cutout { opacity: 0; transform: translateY(28px);
-  transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1) 0.14s, transform 0.6s cubic-bezier(0.4,0,0.2,1) 0.14s; }
-.reveal-on .chef-glow { opacity: 0; transform: scale(0.88);
-  transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1) 0.06s, transform 0.9s cubic-bezier(0.4,0,0.2,1) 0.06s; }
-.reveal-on .about-imgs.is-revealed .chef-cutout,
-.reveal-on .about-imgs.is-revealed .chef-glow { opacity: 1; transform: none; }
+/* Reveal. Everything hangs off `reveal-on`, which the script adds only where it
+   actually sets the observer up, and off `is-in`, which the observer adds per
+   element. Nothing is written inline any more: that is why the reduced-motion
+   block further down reaches all of this on its own.
+   The rule behind the table: the heavier the element, the shorter its travel
+   and the longer its duration. */
+.reveal-on [data-reveal] {
+  opacity: 0;
+  transition: opacity var(--t-base) var(--e-out), transform var(--t-base) var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-on [data-reveal="label"] { transform: translateX(-24px); }
+.reveal-on [data-reveal="title"] { transform: translateY(20px);  --reveal-delay: 80ms; }
+.reveal-on [data-reveal="text"]  { transform: translateY(12px);  --reveal-delay: 160ms; }
+.reveal-on [data-reveal="media"] {
+  transform: scale(1.04);
+  transition-duration: var(--t-slow);
+  --reveal-delay: calc(240ms + var(--i, 0) * 90ms);
+}
+.reveal-on [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* The chef lands after the collage: he is the hero, and the gap is what makes
+   him read as stepping forward instead of fading in. */
+.reveal-on .about-imgs .chef-cutout { opacity: 0; transform: translateY(28px);
+  transition: opacity var(--t-base) var(--e-out) 140ms, transform var(--t-base) var(--e-out) 140ms; }
+.reveal-on .about-imgs.is-in .chef-cutout { opacity: 1; transform: none; }
 .about-text { padding-right: 1rem; }
 .stat-row { display: flex; flex-wrap: wrap; gap: 3rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(201,151,58,0.2); }
 .stat strong { display: block; font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
@@ -1061,29 +1076,43 @@ addEventListener('DOMContentLoaded', function () {
   var year = document.getElementById('year');
   if (year) { year.textContent = new Date().getFullYear(); }
 
-  // Scroll reveal. Off entirely under reduced motion: it writes opacity inline,
-  // so the CSS media query further up cannot undo it.
+  // Scroll reveal. Still off under reduced motion - not because the CSS cannot
+  // reach it (it can, now that this is a class) but because with no observer
+  // there is nothing to run. The `reveal-on` gate is still what guarantees an
+  // interrupted script renders the page complete instead of blank.
   if (!reduced && 'IntersectionObserver' in window) {
-    // Only now: any CSS that starts an element hidden hangs off this class, so
-    // if we never get here the page renders complete instead of blank.
-    document.documentElement.classList.add('reveal-on');
+    var ROLES = [
+      ['.section-label', 'label'],
+      ['.section-title', 'title'],
+      ['.section-text',  'text'],
+      ['.stat',          'text'],
+      ['.contact-item',  'text'],
+      ['.about-imgs',    'media'],
+      ['.service-card',  'media'],
+      ['.menu-col',      'media'],
+      ['.gallery-item',  'media']
+    ];
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) { return; }
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        entry.target.classList.add('is-revealed');   // choreographed children
+        entry.target.classList.add('is-in');
         io.unobserve(entry.target);
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.section-label, .section-title, .section-text, .about-imgs, .service-card, .menu-col, .gallery-item, .contact-item, .stat').forEach(function (el) {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(22px)';
-      el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
-      io.observe(el);
+    ROLES.forEach(function (pair) {
+      document.querySelectorAll(pair[0]).forEach(function (el, i) {
+        el.dataset.reveal = pair[1];
+        if (i) { el.style.setProperty('--i', i); }   // stagger within the group
+        io.observe(el);
+      });
     });
+
+    // Only now: any CSS that starts an element hidden hangs off this class, so
+    // adding it after the attributes exist avoids a frame with everything
+    // invisible.
+    document.documentElement.classList.add('reveal-on');
   }
 
   // Conversion: one delegated listener covers every phone, SMS and WhatsApp
