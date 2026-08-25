@@ -113,11 +113,11 @@ nav.scrolled { background: rgba(13,11,8,0.97) !important; border-bottom: 1px sol
 .hero-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(13,11,8,0.25) 0%, rgba(13,11,8,0.72) 70%), linear-gradient(to bottom, rgba(13,11,8,0.6) 0%, rgba(13,11,8,0.15) 40%, rgba(13,11,8,0.92) 100%); }
 .hero-glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 65%, rgba(196,74,24,0.13) 0%, transparent 55%), radial-gradient(ellipse at 25% 80%, rgba(201,151,58,0.08) 0%, transparent 45%); animation: glowPulse 5s ease-in-out infinite alternate; }
 @keyframes glowPulse { from { opacity: 0.7; } to { opacity: 1; } }
-.hero-content { position: relative; z-index: 2; max-width: 100%; width: 820px; padding: 0 min(2rem, 5vw); animation: fadeUp 1.1s ease both; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+.hero-content { position: relative; z-index: 2; max-width: 100%; width: 820px; padding: 0 min(2rem, 5vw); }
 .eyebrow { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.4rem; }
 .eyebrow::before, .eyebrow::after { content: ''; display: block; width: 36px; height: 1px; background: var(--gold); opacity: 0.55; }
 .hero-title { font-family: 'Playfair Display', serif; font-size: min(clamp(3.2rem, 9vw, 7.5rem), 16vw); font-weight: 900; line-height: 0.92; color: var(--warm-white); margin-bottom: 0.2rem; }
+.hero-title span { display: block; }
 .hero-title em { display: block; font-style: italic; color: var(--gold); }
 .hero-sub { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 2.2vw, 1.55rem); font-weight: 300; font-style: italic; color: rgba(240,230,211,0.7); margin: 1.6rem 0 2.8rem; letter-spacing: 0.04em; }
 .hero-btns { display: inline-flex; gap: 1.1rem; flex-wrap: wrap; justify-content: center; }
@@ -130,6 +130,48 @@ nav.scrolled { background: rgba(13,11,8,0.97) !important; border-bottom: 1px sol
 .scroll-hint { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; font-family: 'Montserrat', sans-serif; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); animation: scrollBounce 2.8s ease-in-out infinite; }
 .scroll-hint span { width: 1px; height: 38px; background: linear-gradient(to bottom, var(--gold), transparent); }
 @keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 55% { transform: translateX(-50%) translateY(7px); } }
+/* PROLOGUE. A wave from the centre out: the mosaic is 7 columns x 2 rows, so
+   |column - 4| gives the distance to the centre and becomes the stagger index.
+   Pure nth-child - no JS counts a single tile. */
+.prologue .hero-mosaic img { animation: tileIgnite var(--t-slow) var(--e-out) backwards;
+  animation-delay: calc(var(--i, 0) * 45ms); }
+.prologue .hero-mosaic img:nth-child(7n+1),
+.prologue .hero-mosaic img:nth-child(7n+7) { --i: 3; }
+.prologue .hero-mosaic img:nth-child(7n+2),
+.prologue .hero-mosaic img:nth-child(7n+6) { --i: 2; }
+.prologue .hero-mosaic img:nth-child(7n+3),
+.prologue .hero-mosaic img:nth-child(7n+5) { --i: 1; }
+.prologue .hero-mosaic img:nth-child(7n+4) { --i: 0; }
+@keyframes tileIgnite { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: none; } }
+
+.prologue .hero-overlay { animation: fadeIn var(--t-slow) var(--e-soft) 420ms backwards; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* The eyebrow condenses: the text arrives spaced out and settles. */
+.prologue .eyebrow { animation: eyebrowIn var(--t-base) var(--e-out) 560ms backwards; }
+@keyframes eyebrowIn { from { opacity: 0; letter-spacing: 0.5em; } to { opacity: 1; letter-spacing: 0.3em; } }
+
+/* The name rises through a mask, line by line. The gold italic comes after -
+   it is the signature, not one more line of the title. The final inset goes
+   negative at the bottom so descenders and shadow are not clipped. */
+.prologue .hero-title span,
+.prologue .hero-title em { animation: maskUp var(--t-slow) var(--e-out) backwards; }
+.prologue .hero-title span { animation-delay: 700ms; }
+.prologue .hero-title em   { animation-delay: 900ms; }
+@keyframes maskUp {
+  from { opacity: 0; transform: translateY(0.45em); clip-path: inset(0 0 100% 0); }
+  to   { opacity: 1; transform: none;               clip-path: inset(0 0 -20% 0); }
+}
+
+.prologue .hero-sub  { animation: riseIn var(--t-base) var(--e-out) 1150ms backwards; }
+.prologue .hero-btns .btn:nth-child(1) { animation: riseIn var(--t-base) var(--e-out) 1300ms backwards; }
+.prologue .hero-btns .btn:nth-child(2) { animation: riseIn var(--t-base) var(--e-out) 1400ms backwards; }
+@keyframes riseIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* Two animations: the entrance touches opacity only, so the infinite bounce -
+   which is what writes transform - never fights it. The bounce starts later. */
+.prologue .scroll-hint { animation: fadeIn var(--t-base) var(--e-out) 1600ms backwards,
+                                    scrollBounce 2.8s ease-in-out 1900ms infinite; }
 
 /* SECTIONS */
 section { padding: 6.5rem 2rem; }
@@ -392,6 +434,19 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 
 <script>
 document.documentElement.className += ' js';
+// Hero prologue: once per session. Written here, in the body of the script,
+// and not in the listener below - there the class would land after the first
+// paint and the hero would show assembled before taking itself apart to animate.
+//
+// sessionStorage THROWS in private windows and with storage blocked. The catch
+// treats that as "already seen": going without the prologue beats taking the
+// whole script down before the data-ready flag.
+try {
+  if (!sessionStorage.getItem('cc:prologue')) {
+    document.documentElement.className += ' prologue';
+    sessionStorage.setItem('cc:prologue', '1');
+  }
+} catch (e) { /* no prologue, page renders complete */ }
 // Safety net. The `js` class hides things: below 760px the nav list is replaced
 // by a panel that only the menu button can open. If the script at the bottom of
 // the page never finishes, that button is dead and the six links are gone on
@@ -721,7 +776,7 @@ addEventListener('DOMContentLoaded', function () {
   <div class="hero-glow"></div>
   <div class="hero-content">
     <div class="eyebrow">Brazilian Catering Experience</div>
-    <h1 class="hero-title">Chef <br><em>Claudinei</em></h1>
+    <h1 class="hero-title"><span>Chef</span><em>Claudinei</em></h1>
     <p class="hero-sub">Authentic Churrasco &amp; Artisan Catering for Every Occasion</p>
     <div class="hero-btns">
       <a href="#contact" class="btn btn-gold">Book an Event</a>
