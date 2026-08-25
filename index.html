@@ -269,10 +269,9 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 /* RESPONSIVE */
 @media (max-width: 900px) {
   nav { padding: 1.2rem 1.5rem; }
-  .nav-links { gap: 1.5rem; }
-  /* No-JS the nav wraps and measures 100px at 600 and 146px at 390. 6.25rem
-     stays under both, so the strip keeps taking the new section's colour. */
-  html:not(.js) section[id] { scroll-margin-top: 6.25rem; }
+  /* 1.1rem, not 1.5: the wordmark is 155px and six links are 502px, so at
+     761px - the narrowest the full bar ever gets - 1.5rem left no gap. */
+  .nav-links { gap: 1.1rem; }
   .about-grid { grid-template-columns: 1fr; gap: 3rem; }
   .about-text { padding-right: 0; }
   .about-imgs { height: 360px; }
@@ -280,7 +279,24 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .menu-grid { columns: 2; }
   .gallery-masonry { columns: 2; }
 }
-@media (max-width: 600px) {
+/* The bar hands over to the button at 760px, not 600. The wordmark measures
+   155px and the six links 502px at the current size, so the full bar needs
+   720px; below that the wordmark wraps, which took the bar to 92px and pushed
+   "Chef Claudinei" flush against "About". 760 leaves 45px of gap. Only the bar
+   moves up - the 600px block below still owns the grids, the hero mosaic and
+   the section padding. */
+@media (max-width: 760px) {
+  /* This rule lives here, not in the 900px block, because it only holds while
+     the bar wraps - and the bar only wraps once the button owns it. No JS it
+     measures 146px at 390 and 100.2px at 750, the shortest it gets in this
+     band; 5.5rem clears both. From 761 to 900 the bar does not wrap and stands
+     65px, so the base 4rem is what keeps the anchor behind it there. */
+  html:not(.js) section[id] { scroll-margin-top: 5.5rem; }
+  /* At 325px and under the no-JS bar takes a third line and stands 195px, and
+     5.5rem stopped clearing it - the section label landed 35px behind the bar
+     instead of below it. The sixth link and the larger type are what pushed it
+     there. 8.5rem is 136px, so the margin is under the bar again. */
+  @media (max-width: 340px) { html:not(.js) section[id] { scroll-margin-top: 8.5rem; } }
   nav { padding: 1rem 1.2rem; flex-wrap: wrap; row-gap: 0.6rem; }
   /* no JS: the list wraps onto a second line and stays reachable. The padding
      is here, not on the panel rule, so the fallback links are tappable too -
@@ -289,10 +305,29 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .nav-links a { display: inline-block; padding: 0.55rem 0.4rem; }
   /* with JS: it becomes a panel under the bar, opened by the button */
   .js .menu-btn { display: flex; }
-  .js .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0; background: rgba(13,11,8,0.98); border-bottom: 1px solid rgba(201,151,58,0.18); }
+  /* max-height because the panel is absolute inside a fixed bar: anything
+     past the fold does not scroll, not by touch and not by Tab. Six links
+     of 48px plus the bar overshoot a phone in landscape (238px of viewport
+     at 667x325), which put Video and Contact out of reach. The 100% resolves
+     against the nav's own height; dvh so the address bar does not lie.
+     flex-wrap:nowrap because the no-JS rule above turns wrapping on: with a
+     max-height in force the column wrapped into a SECOND column instead of
+     overflowing, and Contact landed beside Video rather than below it.
+     justify-content for the same reason: that rule ends in flex-end, which
+     on an overflowing column pushes the content past the START edge - and
+     overflow above the start edge cannot be scrolled to. About was clipped
+     with maxScroll stuck at 0. Both resets belong to the panel, not the
+     wrapping fallback they are inherited from. */
+  .js .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; flex-wrap: nowrap; justify-content: flex-start; gap: 0; max-height: calc(100dvh - 100%); overflow-y: auto; overscroll-behavior: contain; background: rgba(13,11,8,0.98); border-bottom: 1px solid rgba(201,151,58,0.18); }
   .js .nav-links.open { display: flex; }
-  .js .nav-links li { border-top: 1px solid rgba(201,151,58,0.1); }
-  .js .nav-links a { display: block; padding: 1.05rem 1.2rem; font-size: 0.72rem; }
+  /* flex-shrink:0 or the max-height above squeezes the rows instead of
+     scrolling them: six links compressed into 243px overlapped two at a
+     time and scrollHeight never exceeded clientHeight, so overflow-y had
+     nothing to scroll. */
+  .js .nav-links li { border-top: 1px solid rgba(201,151,58,0.1); flex-shrink: 0; }
+  .js .nav-links a { display: block; padding: 1.05rem 1.2rem; font-size: 0.85rem; }
+}
+@media (max-width: 600px) {
   .services-grid { grid-template-columns: 1fr; }
   .menu-grid { columns: 1; }
   .menu-col { margin-bottom: 2.6rem; }
@@ -320,9 +355,9 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 
 <script>
 document.documentElement.className += ' js';
-// Safety net. The `js` class hides things: below 600px the nav list is replaced
+// Safety net. The `js` class hides things: below 760px the nav list is replaced
 // by a panel that only the menu button can open. If the script at the bottom of
-// the page never finishes, that button is dead and the five links are gone on
+// the page never finishes, that button is dead and the six links are gone on
 // mobile. So the script raises a flag as its last instruction; if the flag is
 // not up once the DOM is parsed, we drop the class and the page falls back to a
 // plain, navigable list.
@@ -967,8 +1002,9 @@ addEventListener('DOMContentLoaded', function () {
     navbar.classList.toggle('scrolled', scrollY > 60);
   }, { passive: true });
 
-  // Mobile menu. Four ways to close it, and aria-expanded/aria-label follow all
-  // four - that is the part that rots in silence when someone adds a fifth.
+  // Mobile menu. Five ways to close it, and aria-expanded/aria-label follow all
+  // five - every one of them goes through menu(), which is the only place those
+  // two attributes are written. Never toggle the classes by hand.
   var btn = document.getElementById('menu-btn');
   var list = document.getElementById('nav-links');
 
@@ -993,7 +1029,15 @@ addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape' && list.classList.contains('open')) { menu(false); btn.focus(); }
   });
   addEventListener('resize', function () {               // 4. back above the breakpoint
-    if (innerWidth > 600) { menu(false); }
+    if (innerWidth > 760) { menu(false); }
+  });
+  list.addEventListener('focusout', function (e) {       // 5. focus left the panel
+    // In landscape the panel covers the top of the page, so tabbing past the
+    // last link used to move focus onto a button hidden underneath it. Guarded
+    // on relatedTarget: focus leaving the document entirely is the click-outside
+    // case, already handled above.
+    var to = e.relatedTarget;
+    if (to && to !== btn && !list.contains(to)) { menu(false); }
   });
 
   var year = document.getElementById('year');
@@ -1045,7 +1089,7 @@ addEventListener('DOMContentLoaded', function () {
 
   // Last instruction on purpose: the flag means "the whole script ran". Raise it
   // earlier and a runtime error in the middle would leave the `js` class up with
-  // a dead menu button - five links unreachable on a phone.
+  // a dead menu button - six links unreachable on a phone.
   document.documentElement.dataset.ready = 'ok';
 })();
 </script>
