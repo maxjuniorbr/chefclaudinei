@@ -86,9 +86,16 @@ nav {
   display: flex; justify-content: space-between; align-items: center;
   padding: 1.3rem 3.5rem;
   background: linear-gradient(to bottom, rgba(13,11,8,0.96) 0%, rgba(13,11,8,0) 100%);
-  transition: background 0.3s;
+  transition: background var(--t-out) var(--e-soft),
+              backdrop-filter var(--t-out) var(--e-soft),
+              border-color var(--t-out) var(--e-soft);
 }
-nav.scrolled { background: rgba(13,11,8,0.97) !important; border-bottom: 1px solid rgba(201,151,58,0.15); }
+/* 0.82 instead of 0.97: at nearly opaque the blur never shows and
+   backdrop-filter would be cost with no effect. */
+nav.scrolled { background: rgba(13,11,8,0.82) !important;
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border-bottom: 1px solid rgba(201,151,58,0.15); }
 .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--gold); text-decoration: none; letter-spacing: 0.06em; }
 .nav-links { display: flex; gap: 2.5rem; list-style: none; }
 .nav-links a { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,230,211,0.75); text-decoration: none; transition: color var(--t-quick) var(--e-out); }
@@ -121,7 +128,13 @@ nav.scrolled { background: rgba(13,11,8,0.97) !important; border-bottom: 1px sol
 .hero-title em { display: block; font-style: italic; color: var(--gold); }
 .hero-sub { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 2.2vw, 1.55rem); font-weight: 300; font-style: italic; color: rgba(240,230,211,0.7); margin: 1.6rem 0 2.8rem; letter-spacing: 0.04em; }
 .hero-btns { display: inline-flex; gap: 1.1rem; flex-wrap: wrap; justify-content: center; }
-.btn { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer; border: none; display: inline-block; padding: 1rem 2.6rem; transition: transform 0.2s, background 0.25s, color 0.25s, border-color 0.25s; }
+.btn { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer; border: none; display: inline-block; padding: 1rem 2.6rem; transition: transform var(--t-out) var(--e-out),
+                   background var(--t-out) var(--e-soft),
+                   color var(--t-out) var(--e-soft),
+                   border-color var(--t-out) var(--e-soft); }
+/* Asymmetry: leaving takes twice as long as entering. A fast enter reads as
+   responsive, a slow leave reads as expensive. Symmetric reads as generic. */
+.btn:hover, .btn:focus-visible { transition-duration: var(--t-in); }
 .btn:hover { transform: translateY(-2px); }
 .btn-gold { background: var(--gold); color: var(--black); }
 .btn-gold:hover { background: var(--gold-light); }
@@ -516,8 +529,10 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
        filled animation on the same element beats that transition and silently
        kills the hover. The frame is oversized and offset so the drift can never
        expose an edge. */
+    /* Only the picture: it's the one element animating continuously for the
+       whole track. Nothing else in this block runs on every frame. */
     .service-card picture { position: absolute; left: 0; right: 0; top: -8%;
-      height: 116%; display: block;
+      height: 116%; display: block; will-change: transform;
       animation: photoDrift linear both;
       animation-timeline: --card; animation-range: cover 0% cover 100%; }
     @keyframes photoDrift {
