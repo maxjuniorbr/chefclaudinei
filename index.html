@@ -237,6 +237,12 @@ section { padding: 6.5rem 2rem; }
   transition-duration: var(--t-slow);
   --reveal-delay: calc(240ms + var(--i, 0) * 90ms);
 }
+/* The service cards rise as well as scale - a card that only scales reads as a
+   zoom, not an arrival. Scoped to the services grid so the gallery and the menu
+   keep the shared media reveal. Declared before `.is-in` below so the shared
+   `transform: none` reset still wins the tie: both selectors carry the same
+   specificity, and cascade order is the only thing deciding it. */
+.reveal-on .services-grid [data-reveal="media"] { transform: translateY(32px) scale(1.02); }
 .reveal-on [data-reveal].is-in { opacity: 1; transform: none; }
 
 /* The chef lands after the collage: he is the hero, and the gap is what makes
@@ -470,6 +476,42 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
     .chef-glow { animation: emberSwell linear both;
       animation-timeline: view(); animation-range: entry 30% cover 50%; }
     @keyframes emberSwell { from { opacity: 0.35; } to { opacity: 1; } }
+  }
+}
+
+/* Services choreography. The pin is gone, so this motion costs the visitor no
+   extra scrolling at all.
+   The photo drifts inside its own frame while the card crosses the viewport and
+   the big number drifts the OPPOSITE way at about a third of the amplitude.
+   Counter-motion is what makes a flat card read as having depth - two things
+   moving the same way read as one thing moving. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Declared on the card. The card's own `overflow: hidden` does NOT trap
+       this: a view-timeline measures the card's position inside the card's
+       nearest ancestor scroll container, and neither .services-grid, .inner nor
+       #services is one. Descendants only reference the name. */
+    .service-card { view-timeline: --card block; }
+
+    /* On <picture>, NEVER on the <img>. The img carries the :hover scale, and a
+       filled animation on the same element beats that transition and silently
+       kills the hover. The frame is oversized and offset so the drift can never
+       expose an edge. */
+    .service-card picture { position: absolute; left: 0; right: 0; top: -8%;
+      height: 116%; display: block;
+      animation: photoDrift linear both;
+      animation-timeline: --card; animation-range: cover 0% cover 100%; }
+    @keyframes photoDrift {
+      from { transform: translateY(-4%); }
+      to   { transform: translateY(4%); }
+    }
+
+    .service-number { animation: numberDrift linear both;
+      animation-timeline: --card; animation-range: cover 0% cover 100%; }
+    @keyframes numberDrift {
+      from { transform: translateY(6px); }
+      to   { transform: translateY(-6px); }
+    }
   }
 }
 
