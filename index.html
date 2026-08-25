@@ -497,29 +497,29 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
     .service-card   { grid-area: 1 / 1; animation: cardStage linear both;
       animation-timeline: --svc; }
 
-    .service-card:nth-child(1) { animation-range: contain 0%   contain 34%;
+    .service-card:nth-child(1) { animation-range: contain 0%   contain 36%;
       animation-name: cardStageFirst; }
-    .service-card:nth-child(2) { animation-range: contain 33%  contain 67%; }
-    .service-card:nth-child(3) { animation-range: contain 66%  contain 100%;
+    .service-card:nth-child(2) { animation-range: contain 26%  contain 70%; }
+    .service-card:nth-child(3) { animation-range: contain 60%  contain 100%;
       animation-name: cardStageLast; }
 
-    @keyframes cardStage {
-      0%        { opacity: 0; transform: translateY(60px) scale(0.96); }
-      18%, 74%  { opacity: 1; transform: none; }
+    /* The three overlap by 10 points of `contain`, and inside each overlap one
+       card fades out over exactly the window the next fades in - the opacities
+       sum to 1, so the stage never dims between cards. Narrow the overlap and
+       the handoff becomes a blink: at a 1-point overlap the brightest card on
+       screen measured 0.07. */
+    @keyframes cardStageFirst {
+      0%, 72.2% { opacity: 1; transform: none; }
       100%      { opacity: 0; transform: translateY(-40px) scale(0.98); }
     }
-    /* The first card has no entrance: the #services anchor can land the visitor
-       before the track's `contain` range begins, and in that before-phase the
-       fill applies the 0% keyframe. An invisible 0% meant arriving at an empty
-       stage. Present from the start, exits like the others. */
-    @keyframes cardStageFirst {
-      0%, 74%  { opacity: 1; transform: none; }
-      100%     { opacity: 0; transform: translateY(-40px) scale(0.98); }
+    @keyframes cardStage {
+      0%            { opacity: 0; transform: translateY(60px) scale(0.96); }
+      22.7%, 77.3%  { opacity: 1; transform: none; }
+      100%          { opacity: 0; transform: translateY(-40px) scale(0.98); }
     }
-    /* The last one does not leave: leaving would empty the stage at the end. */
     @keyframes cardStageLast {
       0%        { opacity: 0; transform: translateY(60px) scale(0.96); }
-      18%, 100% { opacity: 1; transform: none; }
+      25%, 100% { opacity: 1; transform: none; }
     }
   }
 }
