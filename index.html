@@ -58,9 +58,9 @@ img { max-width: 100%; height: auto; }
   --muted: #b0a08c;
   --ember: #c44a18;
 
-  /* Motion. Uma duracao por papel e duas curvas, no lugar das quatro curvas
-     ad hoc que conviviam aqui sem criterio. --t-in e --t-out sao o par
-     assimetrico do hover: entra rapido (responsivo), sai devagar (caro). */
+  /* Motion. One duration per role and two curves, replacing the four ad-hoc
+     curves that used to coexist here with no criteria. --t-in and --t-out are
+     the asymmetric hover pair: enters fast (responsive), leaves slow (costly). */
   --t-in:    120ms;
   --t-out:   260ms;
   --t-quick: 180ms;
@@ -551,8 +551,11 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
        filled animation on the same element beats that transition and silently
        kills the hover. The frame is oversized and offset so the drift can never
        expose an edge. */
-    /* Only the picture: it's the one element animating continuously for the
-       whole track. Nothing else in this block runs on every frame. */
+    /* will-change only on the picture, not the number below. The photo is the
+       large, filtered raster - promoting it to its own layer is what actually
+       pays for itself. The number is a few characters of text; promoting a
+       layer for it would cost more in memory than the paint it saves, even
+       though numberDrift also runs every frame. */
     .service-card picture { position: absolute; left: 0; right: 0; top: -8%;
       height: 116%; display: block; will-change: transform;
       animation: photoDrift linear both;
