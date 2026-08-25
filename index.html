@@ -473,57 +473,6 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   }
 }
 
-/* Services stage. The track is tall and the stage sticks: the three cards take
-   turns while the finger stays in control of the scroll - sticky hijacks
-   nothing, unlike JS pinning.
-   Only >=901px: below that it goes back to today's grid, because the phone is
-   where people call from and 300vh of track would stand between them and the
-   number.
-   The stage's top is the bar's height (69.6px). The #services anchor still
-   points at the top of the SECTION, so the 4rem scroll-margin-top does not
-   change - but that is verified in the browser, not assumed. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
-    .services-track { height: 300vh; view-timeline: --svc block; }
-    .services-stage { position: sticky; top: 69.6px; height: calc(100vh - 69.6px);
-      display: flex; align-items: center; }
-    /* Resets the 3-column grid and 2px gap .services-grid already carries: on
-       the stage all three occupy the SAME cell and take turns. */
-    .services-grid  { display: grid; grid-template-columns: 1fr; gap: 0; width: 100%; }
-    /* The cards already carry data-reveal="media". Here the animation beats the
-       reveal's transition in the cascade, on purpose: on the stage the track owns
-       opacity. Do not remove data-reveal - below 901px, and with no
-       animation-timeline, it is the only thing left holding them. */
-    .service-card   { grid-area: 1 / 1; animation: cardStage linear both;
-      animation-timeline: --svc; }
-
-    .service-card:nth-child(1) { animation-range: contain 0%   contain 36%;
-      animation-name: cardStageFirst; }
-    .service-card:nth-child(2) { animation-range: contain 26%  contain 70%; }
-    .service-card:nth-child(3) { animation-range: contain 60%  contain 100%;
-      animation-name: cardStageLast; }
-
-    /* The three overlap by 10 points of `contain`, and inside each overlap one
-       card fades out over exactly the window the next fades in - the opacities
-       sum to 1, so the stage never dims between cards. Narrow the overlap and
-       the handoff becomes a blink: at a 1-point overlap the brightest card on
-       screen measured 0.07. */
-    @keyframes cardStageFirst {
-      0%, 72.2% { opacity: 1; transform: none; }
-      100%      { opacity: 0; transform: translateY(-40px) scale(0.98); }
-    }
-    @keyframes cardStage {
-      0%            { opacity: 0; transform: translateY(60px) scale(0.96); }
-      22.7%, 77.3%  { opacity: 1; transform: none; }
-      100%          { opacity: 0; transform: translateY(-40px) scale(0.98); }
-    }
-    @keyframes cardStageLast {
-      0%        { opacity: 0; transform: translateY(60px) scale(0.96); }
-      25%, 100% { opacity: 1; transform: none; }
-    }
-  }
-}
-
 /* Reduced motion. One blanket rule on purpose: an enumerated list of animated
    selectors ages badly, and a new element would silently ignore the setting.
    The reveal itself is still switched off in the script, not reached from
@@ -941,48 +890,44 @@ addEventListener('DOMContentLoaded', function () {
       <div class="section-label">What We Offer</div>
       <h2 class="section-title">Our <em>Specialties</em></h2>
     </div>
-    <div class="services-track">
-      <div class="services-stage">
-        <div class="services-grid">
-          <div class="service-card">
-            <picture>
-              <source type="image/webp" srcset="assets/img/grill-sausage-peppers-600.webp 600w, assets/img/grill-sausage-peppers-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
-              <img src="assets/img/grill-sausage-peppers.jpg" width="1174" height="2048"
-                   loading="lazy" decoding="async" alt="Linguiça, peppers and grilled meats on the churrasco grill">
-            </picture>
-            <div class="service-card-overlay">
-              <div class="service-number" aria-hidden="true">01</div>
-              <h3 class="service-name">Brazilian Churrasco</h3>
-              <p class="service-desc">Authentic fire-grilled meats: picanha, fraldinha, linguiça, chicken and more, prepared tableside in true Brazilian style.</p>
-              <span class="service-tag">Signature Service</span>
-            </div>
-          </div>
-          <div class="service-card">
-            <picture>
-              <source type="image/webp" srcset="assets/img/grazing-table-spread-600.webp 600w, assets/img/grazing-table-spread-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
-              <img src="assets/img/grazing-table-spread.jpg" width="1160" height="2048"
-                   loading="lazy" decoding="async" alt="Full grazing table with artisan breads, cured meats and preserves">
-            </picture>
-            <div class="service-card-overlay">
-              <div class="service-number" aria-hidden="true">02</div>
-              <h3 class="service-name">Charcuterie &amp; Grazing Boards</h3>
-              <p class="service-desc">Stunning artisan boards featuring imported cheeses, cured meats, seasonal fruits, house-made jams, and rustic breads.</p>
-              <span class="service-tag">Popular Add-On</span>
-            </div>
-          </div>
-          <div class="service-card">
-            <picture>
-              <source type="image/webp" srcset="assets/img/fruit-platter-tropical-600.webp 600w, assets/img/fruit-platter-tropical-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
-              <img src="assets/img/fruit-platter-tropical.jpg" width="1160" height="2048"
-                   loading="lazy" decoding="async" alt="Tropical fruit platter on Chef Claudinei branded board">
-            </picture>
-            <div class="service-card-overlay">
-              <div class="service-number" aria-hidden="true">03</div>
-              <h3 class="service-name">Fruit Displays</h3>
-              <p class="service-desc">Beautifully arranged seasonal fruit platters, cut and styled to order. The perfect fresh finale to any event.</p>
-              <span class="service-tag">Available Year-Round</span>
-            </div>
-          </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <picture>
+          <source type="image/webp" srcset="assets/img/grill-sausage-peppers-600.webp 600w, assets/img/grill-sausage-peppers-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
+          <img src="assets/img/grill-sausage-peppers.jpg" width="1174" height="2048"
+               loading="lazy" decoding="async" alt="Linguiça, peppers and grilled meats on the churrasco grill">
+        </picture>
+        <div class="service-card-overlay">
+          <div class="service-number" aria-hidden="true">01</div>
+          <h3 class="service-name">Brazilian Churrasco</h3>
+          <p class="service-desc">Authentic fire-grilled meats: picanha, fraldinha, linguiça, chicken and more, prepared tableside in true Brazilian style.</p>
+          <span class="service-tag">Signature Service</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <picture>
+          <source type="image/webp" srcset="assets/img/grazing-table-spread-600.webp 600w, assets/img/grazing-table-spread-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
+          <img src="assets/img/grazing-table-spread.jpg" width="1160" height="2048"
+               loading="lazy" decoding="async" alt="Full grazing table with artisan breads, cured meats and preserves">
+        </picture>
+        <div class="service-card-overlay">
+          <div class="service-number" aria-hidden="true">02</div>
+          <h3 class="service-name">Charcuterie &amp; Grazing Boards</h3>
+          <p class="service-desc">Stunning artisan boards featuring imported cheeses, cured meats, seasonal fruits, house-made jams, and rustic breads.</p>
+          <span class="service-tag">Popular Add-On</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <picture>
+          <source type="image/webp" srcset="assets/img/fruit-platter-tropical-600.webp 600w, assets/img/fruit-platter-tropical-1000.webp 1000w" sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px">
+          <img src="assets/img/fruit-platter-tropical.jpg" width="1160" height="2048"
+               loading="lazy" decoding="async" alt="Tropical fruit platter on Chef Claudinei branded board">
+        </picture>
+        <div class="service-card-overlay">
+          <div class="service-number" aria-hidden="true">03</div>
+          <h3 class="service-name">Fruit Displays</h3>
+          <p class="service-desc">Beautifully arranged seasonal fruit platters, cut and styled to order. The perfect fresh finale to any event.</p>
+          <span class="service-tag">Available Year-Round</span>
         </div>
       </div>
     </div>
