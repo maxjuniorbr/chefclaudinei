@@ -59,12 +59,14 @@ img { max-width: 100%; height: auto; }
   --ember: #c44a18;
 }
 html { scroll-behavior: smooth; }
-/* The bar is fixed, so an anchor has to stop short of it - otherwise the label
-   of the target section lands underneath. 6rem clears the 74.5px mobile bar. */
-section[id] { scroll-margin-top: 6rem; }
-/* Without JS the nav wraps to two rows and measures ~146px, so the fallback
-   needs more room than the panel version does. */
-html:not(.js) section[id] { scroll-margin-top: 10rem; }
+/* Deliberately a little LESS than the bar is tall (4rem = 64px against a
+   69.6px bar). Stopping short of the bar left a 26px strip showing the previous
+   section's colour, so a jump between two sections of different shades read as
+   two horizontal lines: the bar's gold border, then the colour step. Landing
+   just behind the bar hides the section's top edge, the strip takes the new
+   colour, and only the border shows. The section's own 6.5rem of padding is
+   what keeps the label clear. */
+section[id] { scroll-margin-top: 4rem; }
 body { background: var(--black); color: var(--cream); font-family: 'Cormorant Garamond', Georgia, serif; overflow-x: hidden; }
 
 /* NAV */
@@ -244,6 +246,9 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 @media (max-width: 900px) {
   nav { padding: 1.2rem 1.5rem; }
   .nav-links { gap: 1.5rem; }
+  /* No-JS the nav wraps and measures 100px at 600 and 146px at 390. 6.25rem
+     stays under both, so the strip keeps taking the new section's colour. */
+  html:not(.js) section[id] { scroll-margin-top: 6.25rem; }
   .about-grid { grid-template-columns: 1fr; gap: 3rem; }
   .about-text { padding-right: 0; }
   .about-imgs { height: 360px; }
