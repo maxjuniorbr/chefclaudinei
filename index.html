@@ -156,12 +156,14 @@ section { padding: 6.5rem 2rem; }
    behind it so the figure reads as lit by the fire the rest of the page sells. */
 .about-imgs .chef-cutout { bottom: 0; left: 0; right: 0; margin-inline: auto; width: auto; height: 100%; max-width: 78%;
   object-fit: contain; border: 0; z-index: 2;
-  filter: drop-shadow(0 18px 30px rgba(0,0,0,0.6));
-  /* The source photo ends in a straight cut across the coat. Fading the last
-     14% dissolves that edge into the background instead of announcing it. A
-     browser without mask support just shows the hard cut - the old look. */
-  -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent 100%);
-          mask-image: linear-gradient(to bottom, #000 86%, transparent 100%); }
+  filter: drop-shadow(0 18px 30px rgba(0,0,0,0.6)); }
+/* The bottom fade that dissolves the photo's straight cut is baked into the
+   asset's alpha, NOT a mask-image here. A mask clips to the border box, and the
+   drop-shadow above spills past it: the mask guillotined that soft shadow into
+   a hard vertical line down both sides of the image box. Invisible while the
+   cut-out was wide enough to fill its box, obvious the moment a narrower
+   full-length figure left room for the shadow to spill. Baked in, there is no
+   box to clip against, and a browser without mask support gets the same fade. */
 .chef-glow { position: absolute; bottom: 4%; left: 0; right: 0; margin-inline: auto; width: 76%; aspect-ratio: 1; z-index: 1; pointer-events: none; }
 .chef-glow::after { content: ''; position: absolute; inset: 0; border-radius: 50%;
   background: radial-gradient(circle, rgba(224,181,90,0.42) 0%, rgba(201,151,58,0.18) 45%, rgba(201,151,58,0) 72%);
