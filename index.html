@@ -255,7 +255,13 @@ section { padding: 6.5rem 2rem; }
    keep the shared media reveal. Declared before `.is-in` below so the shared
    `transform: none` reset still wins the tie: both selectors carry the same
    specificity, and cascade order is the only thing deciding it. */
-.reveal-on .services-grid [data-reveal="media"] { transform: translateY(32px) scale(1.02); }
+/* translateY only, no scale: a fractional card scale (1.02 easing to 1) makes
+   the compositor round the drifting photo layer's clip and the overlay's raster
+   to different device pixels, and the photo peeks out as a hairline across the
+   card's bottom edge for the whole entrance. A pure translation moves both
+   layers by identical amounts and the seam cannot open. The rise reads the
+   same; the 2% zoom was invisible at entrance opacity anyway. */
+.reveal-on .services-grid [data-reveal="media"] { transform: translateY(32px); }
 .reveal-on [data-reveal].is-in { opacity: 1; transform: none; }
 
 /* The chef lands after the collage: he is the hero, and the gap is what makes
@@ -278,7 +284,15 @@ section { padding: 6.5rem 2rem; }
    tearing rather than depth. The gap is also what separates the cards
    vertically once they stack below 900px. */
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-.service-card { position: relative; overflow: hidden; height: 440px; }
+/* clip-path, not overflow: hidden. The drifting photo is a composited layer,
+   and while the card's own entrance transform is mid-flight, overflow clipping
+   let that layer slip past the overlay's raster by a device pixel - a bright
+   hairline of photo across the card's base on every load. clip-path clips
+   composited children in the compositor, in the card's own transform space, so
+   the seam cannot open. It also removes a latent scroll container (overflow
+   makes one even when nothing scrolls), the same trap .hero and #contact hit.
+   The card has no border, so padding-box and border-box clips are identical. */
+.service-card { position: relative; clip-path: inset(0); height: 440px; }
 .service-card img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--t-slow) var(--e-out), filter var(--t-out) var(--e-out); filter: brightness(0.65) sepia(15%); }
 .service-card:hover img { transform: scale(1.06); filter: brightness(0.5) sepia(10%); }
 /* Four stops, not three. The old 0.2 at 60% left the copy sitting on raw
@@ -293,8 +307,16 @@ section { padding: 6.5rem 2rem; }
    background of (13, 11, 8) - the card ended lighter than the page and the join
    read as a hairline across the base of every card. Full opacity lands the base
    on exactly the background colour and the edge disappears. Darker behind the
-   copy can only help the contrast the four stops below were tuned for. */
-.service-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.82) 38%, rgba(13,11,8,0.35) 68%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; transition: background var(--t-out) var(--e-soft); }
+   copy can only help the contrast the four stops below were tuned for.
+   bottom: -2px overshoots the card's clip, and translateZ(0) promotes the
+   overlay into its own compositor layer: the drifting photo IS one, and when
+   only the photo was composited the two rasters rounded the clip edge
+   differently - a one-pixel line of photo showed through across the card's
+   base on load. With both composited, their bounds round together and the
+   seam cannot open; the overshoot covers the sub-pixel remainder.
+   padding-bottom sits AFTER the padding shorthand, which would otherwise
+   reset it, and compensates so the copy does not move. */
+.service-card-overlay { position: absolute; inset: 0; bottom: -2px; transform: translateZ(0); background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.82) 38%, rgba(13,11,8,0.35) 68%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; padding-bottom: calc(2.2rem + 2px); transition: background var(--t-out) var(--e-soft); }
 .service-card:hover .service-card-overlay { background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.88) 38%, rgba(13,11,8,0.55) 68%, rgba(13,11,8,0.2) 100%); }
 .service-number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: rgba(201,151,58,0.18); line-height: 1; margin-bottom: 0.5rem; transition: color var(--t-out) var(--e-soft); }
 .service-card:hover .service-number { color: rgba(201,151,58,0.35); }
