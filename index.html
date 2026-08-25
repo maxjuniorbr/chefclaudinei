@@ -126,6 +126,11 @@ section { padding: 6.5rem 2rem; }
 /* ABOUT */
 #about { background: var(--dark); }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+/* Text first on wide screens: eye-tracking puts the first fixations on the
+   left, and the story is the high-information half. The chef is angled to the
+   viewer's left, so on the right he faces into the text instead of off-page. */
+.about-text { order: 1; }
+.about-imgs { order: 2; }
 .about-imgs { position: relative; height: 540px; }
 .about-imgs img { position: absolute; object-fit: cover; border: 3px solid var(--charcoal); }
 .about-imgs .img-accent { bottom: 0; right: 0; width: 58%; height: 62%; border-color: var(--gold); }
@@ -164,7 +169,7 @@ section { padding: 6.5rem 2rem; }
   transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1) 0.06s, transform 0.9s cubic-bezier(0.4,0,0.2,1) 0.06s; }
 .reveal-on .about-imgs.is-revealed .chef-cutout,
 .reveal-on .about-imgs.is-revealed .chef-glow { opacity: 1; transform: none; }
-.about-text { padding-left: 1rem; }
+.about-text { padding-right: 1rem; }
 .stat-row { display: flex; flex-wrap: wrap; gap: 3rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(201,151,58,0.2); }
 .stat strong { display: block; font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
 .stat span { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 0.4rem; display: block; }
@@ -234,6 +239,8 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   nav { padding: 1.2rem 1.5rem; }
   .nav-links { gap: 1.5rem; }
   .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .about-text { order: 2; padding-right: 0; }
+  .about-imgs { order: 1; }
   .about-imgs { height: 360px; }
   .services-grid { grid-template-columns: 1fr 1fr; }
   .gallery-masonry { columns: 2; }
