@@ -129,12 +129,12 @@ section { padding: 6.5rem 2rem; }
 
 /* ABOUT */
 #about { background: var(--dark); }
+/* The story comes first in the markup AND on the page: eye-tracking puts the
+   first fixations on the left, and the story is the high-information half. The
+   chef is angled to the viewer's left, so on the right he faces into the text
+   instead of off-page. No `order` here on purpose - reordering visually without
+   reordering the DOM leaves screen readers and Tab following the old sequence. */
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
-/* Text first on wide screens: eye-tracking puts the first fixations on the
-   left, and the story is the high-information half. The chef is angled to the
-   viewer's left, so on the right he faces into the text instead of off-page. */
-.about-text { order: 1; }
-.about-imgs { order: 2; }
 .about-imgs { position: relative; height: 540px; }
 .about-imgs img { position: absolute; }
 
@@ -245,8 +245,7 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   nav { padding: 1.2rem 1.5rem; }
   .nav-links { gap: 1.5rem; }
   .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .about-text { order: 2; padding-right: 0; }
-  .about-imgs { order: 1; }
+  .about-text { padding-right: 0; }
   .about-imgs { height: 360px; }
   .services-grid { grid-template-columns: 1fr 1fr; }
   .gallery-masonry { columns: 2; }
@@ -455,14 +454,6 @@ addEventListener('DOMContentLoaded', function () {
 <section id="about">
   <div class="inner">
     <div class="about-grid">
-      <div class="about-imgs">
-        <div class="chef-glow" aria-hidden="true"></div>
-        <picture>
-          <source type="image/webp" srcset="assets/img/chef-portrait-600.webp 600w" sizes="(max-width: 900px) 45vw, 340px">
-          <img class="chef-cutout" src="assets/img/chef-portrait.png" width="600" height="980"
-               loading="lazy" decoding="async" alt="Chef Claudinei in his black chef's coat">
-        </picture>
-      </div>
       <div class="about-text">
         <div class="section-label">Our Story</div>
         <h2 class="section-title">Passion Forged <br><em>Over Open Fire</em></h2>
@@ -482,6 +473,14 @@ addEventListener('DOMContentLoaded', function () {
           <div class="stat"><strong>300+</strong><span>Events Catered</span></div>
           <div class="stat"><strong>100%</strong><span>Fresh Ingredients</span></div>
         </div>
+      </div>
+      <div class="about-imgs">
+        <div class="chef-glow" aria-hidden="true"></div>
+        <picture>
+          <source type="image/webp" srcset="assets/img/chef-portrait-600.webp 600w" sizes="(max-width: 900px) 45vw, 340px">
+          <img class="chef-cutout" src="assets/img/chef-portrait.png" width="600" height="980"
+               loading="lazy" decoding="async" alt="Chef Claudinei in his black chef's coat">
+        </picture>
       </div>
     </div>
   </div>
