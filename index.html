@@ -319,7 +319,12 @@ section { padding: 6.5rem 2rem; }
 .video-caption { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); text-align: center; margin-top: 1.2rem; }
 
 /* CONTACT */
-#contact { background: var(--black); position: relative; overflow: hidden; }
+/* clip-path, not overflow: hidden - same visual clip of the ::before glow
+   below, but it does not turn #contact into a scroll container. The section
+   label's rule below runs on view(), which takes no scroller override (there
+   is no view(root)); an ancestor scroll container is enough to freeze it, the
+   way .hero's overflow: hidden froze the hero's scroll() rules. */
+#contact { background: var(--black); position: relative; clip-path: inset(0); }
 #contact::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(201,151,58,0.07) 0%, transparent 60%), radial-gradient(ellipse at 20% 50%, rgba(196,74,24,0.06) 0%, transparent 55%); pointer-events: none; }
 .contact-item { display: flex; align-items: flex-start; gap: 1.2rem; margin-bottom: 2rem; }
 .contact-icon { width: 42px; height: 42px; min-width: 42px; border: 1px solid rgba(201,151,58,0.4); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1rem; }
