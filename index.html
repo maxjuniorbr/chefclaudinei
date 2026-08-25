@@ -415,6 +415,51 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .about-imgs { height: 280px; }
 }
 
+/* Continuous layer. Guarded twice: by @supports, because a browser without
+   animation-timeline has to fall back to the IntersectionObserver reveal; and by
+   prefers-reduced-motion, because the `*` block further down zeroes duration but
+   does not stop a filled animation from holding its state. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* Depth: the mosaic rises less than the page does. */
+    .hero-mosaic { animation: heroParallax linear both;
+      animation-timeline: scroll(); animation-range: 0 100vh; }
+    @keyframes heroParallax { to { transform: translateY(-12%); } }
+
+    /* The hero content sinks into the smoke on its way out. */
+    .hero-content { animation: heroSink linear both;
+      animation-timeline: scroll(); animation-range: 0 90vh; }
+    @keyframes heroSink {
+      0%, 55% { opacity: 1; transform: none; }
+      100%    { opacity: 0; transform: translateY(-40px); }
+    }
+
+    /* The label's rule draws itself. scaleX, not width: width is layout. */
+    .section-label::after { transform-origin: left;
+      animation: ruleDraw linear both;
+      animation-timeline: view(); animation-range: entry 20% entry 80%; }
+    @keyframes ruleDraw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    /* Continuous gallery, replacing the on/off. It goes on the CONTAINER, not
+       the <img>: the img carries the hover, and a filled animation would beat
+       the hover transition and kill the effect. */
+    .gallery-item { animation: galleryLift linear both;
+      animation-timeline: view(); animation-range: entry 0% cover 35%; }
+    @keyframes galleryLift {
+      from { opacity: 0.45; transform: scale(1.05); }
+      to   { opacity: 1;    transform: none; }
+    }
+
+    /* The ember warms as #about fills the screen. On .chef-glow, not on the
+       ::after: the ::after already runs emberBreathe and the two would fight
+       over opacity. */
+    .chef-glow { animation: emberSwell linear both;
+      animation-timeline: view(); animation-range: entry 30% cover 50%; }
+    @keyframes emberSwell { from { opacity: 0.35; } to { opacity: 1; } }
+  }
+}
+
 /* Reduced motion. One blanket rule on purpose: an enumerated list of animated
    selectors ages badly, and a new element would silently ignore the setting.
    The reveal itself is still switched off in the script, not reached from
