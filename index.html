@@ -422,14 +422,22 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
 
-    /* Depth: the mosaic rises less than the page does. */
+    /* Depth: the mosaic rises less than the page does. Explicit `root`, not the
+       default `scroll()`/`scroll(nearest)`: .hero has `overflow: hidden` (it
+       clips the mosaic to the hero box), which makes .hero itself the nearest
+       scroll container - and .hero never scrolls, so the default timeline
+       would bind there and sit frozen at 0%, parsing fine and doing nothing.
+       `root` binds to the document scroller, which is what "the mosaic rises
+       less than the page does" actually means. Do not simplify this back to
+       `scroll()`. */
     .hero-mosaic { animation: heroParallax linear both;
-      animation-timeline: scroll(); animation-range: 0 100vh; }
+      animation-timeline: scroll(root); animation-range: 0 100vh; }
     @keyframes heroParallax { to { transform: translateY(-12%); } }
 
-    /* The hero content sinks into the smoke on its way out. */
+    /* The hero content sinks into the smoke on its way out. Same `root` trap
+       as .hero-mosaic above - .hero-content is also inside .hero. */
     .hero-content { animation: heroSink linear both;
-      animation-timeline: scroll(); animation-range: 0 90vh; }
+      animation-timeline: scroll(root); animation-range: 0 90vh; }
     @keyframes heroSink {
       0%, 55% { opacity: 1; transform: none; }
       100%    { opacity: 0; transform: translateY(-40px); }
