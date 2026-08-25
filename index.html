@@ -275,11 +275,23 @@ section { padding: 6.5rem 2rem; }
    over a busy photo are harder to read than the same ratio over flat colour.
    The firmer ramp puts the worst case at 7.42:1 and still leaves the top
    40% of the card as photograph. */
-.service-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,11,8,0.95) 0%, rgba(13,11,8,0.82) 38%, rgba(13,11,8,0.35) 68%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; transition: background var(--t-out) var(--e-soft); }
-.service-card:hover .service-card-overlay { background: linear-gradient(to top, rgba(13,11,8,0.97) 0%, rgba(13,11,8,0.88) 38%, rgba(13,11,8,0.55) 68%, rgba(13,11,8,0.2) 100%); }
+/* The bottom stop is 1, not 0.95. At 0.95 five percent of the photograph came
+   through and the card's last rows measured (18, 15, 12) against a section
+   background of (13, 11, 8) - the card ended lighter than the page and the join
+   read as a hairline across the base of every card. Full opacity lands the base
+   on exactly the background colour and the edge disappears. Darker behind the
+   copy can only help the contrast the four stops below were tuned for. */
+.service-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.82) 38%, rgba(13,11,8,0.35) 68%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; transition: background var(--t-out) var(--e-soft); }
+.service-card:hover .service-card-overlay { background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.88) 38%, rgba(13,11,8,0.55) 68%, rgba(13,11,8,0.2) 100%); }
 .service-number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: rgba(201,151,58,0.18); line-height: 1; margin-bottom: 0.5rem; transition: color var(--t-out) var(--e-soft); }
 .service-card:hover .service-number { color: rgba(201,151,58,0.35); }
-.service-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--warm-white); margin-bottom: 0.6rem; }
+/* Two lines are reserved whether or not the title needs them. The overlay is
+   bottom-aligned, so a title that wraps pushes its own number up: card 02 wraps
+   and its 02 sat exactly one line - 32px - above the 01 and 03 beside it. An
+   explicit line-height rather than `normal`, so the reserved box is the same
+   height the browser actually renders. Released below 600px, where the cards
+   stack and there is no neighbour to line up with. */
+.service-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--warm-white); margin-bottom: 0.6rem; line-height: 1.35; min-height: 2.7em; }
 /* Always visible. It used to be revealed on :hover, but the card is a plain
    div with nothing focusable inside, so keyboard users had no way to reach the
    text at all above 900px - and it is the same copy the JSON-LD duplicates. */
@@ -423,6 +435,7 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 }
 @media (max-width: 600px) {
   .services-grid { grid-template-columns: 1fr; }
+  .service-name { min-height: 0; }
   .menu-grid { columns: 1; }
   .menu-col { margin-bottom: 2.6rem; }
   .gallery-masonry { columns: 2; }
