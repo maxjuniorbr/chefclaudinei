@@ -57,6 +57,17 @@ img { max-width: 100%; height: auto; }
   --warm-white: #faf6ef;
   --muted: #b0a08c;
   --ember: #c44a18;
+
+  /* Motion. Uma duracao por papel e duas curvas, no lugar das quatro curvas
+     ad hoc que conviviam aqui sem criterio. --t-in e --t-out sao o par
+     assimetrico do hover: entra rapido (responsivo), sai devagar (caro). */
+  --t-in:    120ms;
+  --t-out:   260ms;
+  --t-quick: 180ms;
+  --t-base:  620ms;
+  --t-slow: 1100ms;
+  --e-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --e-soft: cubic-bezier(0.65, 0, 0.35, 1);
 }
 html { scroll-behavior: smooth; }
 /* Deliberately a little LESS than the bar is tall (4rem = 64px against a
@@ -80,13 +91,13 @@ nav {
 nav.scrolled { background: rgba(13,11,8,0.97) !important; border-bottom: 1px solid rgba(201,151,58,0.15); }
 .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--gold); text-decoration: none; letter-spacing: 0.06em; }
 .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-.nav-links a { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,230,211,0.75); text-decoration: none; transition: color 0.2s; }
+.nav-links a { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,230,211,0.75); text-decoration: none; transition: color var(--t-quick) var(--e-out); }
 .nav-links a:hover { color: var(--gold); }
 
 /* Menu button: only shows while the `js` class is on <html>, which means the
    script ran to the end. Without it the plain list stays visible and clickable. */
 .menu-btn { display: none; background: none; border: 0; padding: 16px 12px; cursor: pointer; flex-direction: column; gap: 4px; }
-.menu-btn span { display: block; width: 22px; height: 1.5px; background: var(--gold); transition: transform 0.25s cubic-bezier(.22,.61,.36,1), opacity 0.2s; }
+.menu-btn span { display: block; width: 22px; height: 1.5px; background: var(--gold); transition: transform var(--t-quick) var(--e-out), opacity var(--t-quick) var(--e-out); }
 .menu-btn.is-open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
 .menu-btn.is-open span:nth-child(2) { opacity: 0; }
 .menu-btn.is-open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
@@ -184,7 +195,7 @@ section { padding: 6.5rem 2rem; }
 .services-header { margin-bottom: 4rem; }
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
 .service-card { position: relative; overflow: hidden; height: 440px; }
-.service-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease, filter 0.5s ease; filter: brightness(0.65) sepia(15%); }
+.service-card img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--t-slow) var(--e-out), filter var(--t-out) var(--e-out); filter: brightness(0.65) sepia(15%); }
 .service-card:hover img { transform: scale(1.06); filter: brightness(0.5) sepia(10%); }
 /* Four stops, not three. The old 0.2 at 60% left the copy sitting on raw
    photo, and card 02's title wraps to two lines and climbs right into that
@@ -193,9 +204,9 @@ section { padding: 6.5rem 2rem; }
    over a busy photo are harder to read than the same ratio over flat colour.
    The firmer ramp puts the worst case at 7.42:1 and still leaves the top
    40% of the card as photograph. */
-.service-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,11,8,0.95) 0%, rgba(13,11,8,0.82) 38%, rgba(13,11,8,0.35) 68%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; transition: background 0.4s; }
+.service-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,11,8,0.95) 0%, rgba(13,11,8,0.82) 38%, rgba(13,11,8,0.35) 68%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem; transition: background var(--t-out) var(--e-soft); }
 .service-card:hover .service-card-overlay { background: linear-gradient(to top, rgba(13,11,8,0.97) 0%, rgba(13,11,8,0.88) 38%, rgba(13,11,8,0.55) 68%, rgba(13,11,8,0.2) 100%); }
-.service-number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: rgba(201,151,58,0.18); line-height: 1; margin-bottom: 0.5rem; transition: color 0.4s; }
+.service-number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: rgba(201,151,58,0.18); line-height: 1; margin-bottom: 0.5rem; transition: color var(--t-out) var(--e-soft); }
 .service-card:hover .service-number { color: rgba(201,151,58,0.35); }
 .service-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--warm-white); margin-bottom: 0.6rem; }
 /* Always visible. It used to be revealed on :hover, but the card is a plain
@@ -236,9 +247,9 @@ section { padding: 6.5rem 2rem; }
 .gallery-header { margin-bottom: 3rem; }
 .gallery-masonry { columns: 4; column-gap: 8px; }
 .gallery-item { break-inside: avoid; margin-bottom: 8px; overflow: hidden; position: relative; }
-.gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.5s ease, filter 0.4s ease; filter: brightness(0.88); }
+.gallery-item img { width: 100%; height: auto; display: block; transition: transform var(--t-base) var(--e-out), filter var(--t-out) var(--e-out); filter: brightness(0.88); }
 .gallery-item:hover img { transform: scale(1.04); filter: brightness(1.05); }
-.gallery-item::after { content: ''; position: absolute; inset: 0; background: rgba(201,151,58,0); transition: background 0.3s; }
+.gallery-item::after { content: ''; position: absolute; inset: 0; background: rgba(201,151,58,0); transition: background var(--t-out) var(--e-soft); }
 .gallery-item:hover::after { background: rgba(201,151,58,0.07); }
 
 /* VIDEO */
@@ -255,7 +266,7 @@ section { padding: 6.5rem 2rem; }
 .contact-icon { width: 42px; height: 42px; min-width: 42px; border: 1px solid rgba(201,151,58,0.4); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1rem; }
 .contact-item-label { font-family: 'Montserrat', sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
 .contact-item-value { font-size: 1.1rem; font-weight: 400; color: var(--cream); }
-.contact-item-value a { color: var(--cream); text-decoration: none; transition: color 0.2s; }
+.contact-item-value a { color: var(--cream); text-decoration: none; transition: color var(--t-quick) var(--e-out); }
 .contact-item-value a:hover { color: var(--gold); }
 
 /* FOOTER */
@@ -264,7 +275,7 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
 .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); margin-bottom: 0.4rem; }
 .footer-tagline { font-size: 0.95rem; font-weight: 300; font-style: italic; color: var(--muted); margin-bottom: 2rem; }
 .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; list-style: none; margin-bottom: 2rem; }
-.footer-links a { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color var(--t-quick) var(--e-out); }
 .footer-links a:hover { color: var(--gold); }
 /* Carries the phone number, so it is body text, not decoration: --muted at
    0.68rem clears 4.5:1 where the old half-transparent 0.6rem sat at 2.02:1.
