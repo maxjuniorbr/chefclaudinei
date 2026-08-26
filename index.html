@@ -73,6 +73,15 @@ addEventListener('DOMContentLoaded', function () {
   gtag('config', 'G-SHR8YHQGHB');
 </script>
 
+<!-- `defer`, and in the <head> rather than at the foot of the body. Deferred
+     scripts run after parsing and before DOMContentLoaded either way, so the
+     safety net above still gets its answer - but here the preload scanner finds
+     the file at the START of the parse instead of after the 260 lines of
+     JSON-LD, so the download overlaps the parse instead of following it. That
+     shortens the window in which a contact link can be tapped before the
+     generate_lead listener is registered. -->
+<script src="assets/js/site.js" defer></script>
+
 </head>
 <body>
 
@@ -716,6 +725,5 @@ addEventListener('DOMContentLoaded', function () {
 }
 </script>
 
-<script src="assets/js/site.js" defer></script>
 </body>
 </html>
