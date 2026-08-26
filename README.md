@@ -15,8 +15,10 @@ pure HTML, CSS, and vanilla JavaScript - no frameworks or dependencies.
 ## Structure
 
 ```
-index.html          # Everything: markup, inline <style>, inline <script>
+index.html          # Markup, meta tags and structured data
 assets/
+  css/site.css      # All the styling
+  js/site.js        # All the behaviour
   fonts/            # Self-hosted woff2 subsets
   img/              # Photos, plus -600/-1000 webp and tile/ variants
   video/            # Event highlight video

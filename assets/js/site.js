@@ -1,8 +1,8 @@
 /* Chef Claudinei - page behaviour.
 
-   Loaded with `defer` from the foot of index.html, so it runs after parsing and
-   still before DOMContentLoaded - which is what the safety net inlined in the
-   <head> waits for.
+   Loaded with `defer` from the <head> of index.html, so it downloads during the
+   parse and runs after it, still before DOMContentLoaded - which is what the
+   safety net inlined in the <head> waits for.
 
    In order: compact bar on scroll, mobile menu, footer year, scroll reveal,
    generate_lead listener, and - last, always - the data-ready flag. Nothing may
