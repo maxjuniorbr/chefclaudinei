@@ -1002,11 +1002,12 @@ addEventListener('DOMContentLoaded', function () {
       <div class="about-imgs">
         <div class="chef-glow" aria-hidden="true"></div>
         <picture>
-          <!-- One size, not a srcset: 456px is the subject's native width in the
-               cut-out, and the box never asks for more than ~234 CSS px. A second
-               variant would be an upscale, which is interpolation sold as detail. -->
+          <!-- One size, not a srcset: the box never asks for more than ~235 CSS
+               px, so 600 covers 2x desktop and 3x phones with margin. The master
+               is 1344px wide (in chefclaudinei-masters); shipping more than 600
+               would be dead weight on a box this small. -->
           <source type="image/webp" srcset="assets/img/chef-portrait.webp">
-          <img class="chef-cutout" src="assets/img/chef-portrait.png" width="456" height="1054"
+          <img class="chef-cutout" src="assets/img/chef-portrait.png" width="600" height="1387"
                loading="lazy" decoding="async" alt="Chef Claudinei standing with his arms crossed in his black chef's coat">
         </picture>
       </div>
