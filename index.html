@@ -662,6 +662,7 @@ addEventListener('DOMContentLoaded', function () {
       "description": "Full-service Brazilian catering: fire-grilled churrasco, artisan charcuterie and grazing boards, and seasonal fruit displays for private and corporate events.",
       "url": "https://chefclaudinei.com/",
       "telephone": "+1-516-477-1234",
+      "email": "info@chefclaudinei.com",
       "servesCuisine": "Brazilian",
       "image": "https://chefclaudinei.com/assets/img/og-cover.jpg",
       "logo": "https://chefclaudinei.com/assets/img/favicon-512.png",
@@ -679,6 +680,7 @@ addEventListener('DOMContentLoaded', function () {
         "@type": "ContactPoint",
         "contactType": "reservations",
         "telephone": "+1-516-477-1234",
+        "email": "info@chefclaudinei.com",
         "availableLanguage": ["en", "pt"]
       },
       "founder": { "@id": "https://chefclaudinei.com/#chef" },
@@ -1254,6 +1256,13 @@ addEventListener('DOMContentLoaded', function () {
         <div class="contact-item-value"><a href="https://wa.me/15164771234">Message us on WhatsApp</a></div>
       </div>
     </div>
+    <div class="contact-item">
+      <div class="contact-icon"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+      <div>
+        <div class="contact-item-label">Email</div>
+        <div class="contact-item-value"><a href="mailto:info@chefclaudinei.com">info@chefclaudinei.com</a></div>
+      </div>
+    </div>
   </div>
 </section>
 </main>
@@ -1364,7 +1373,7 @@ addEventListener('DOMContentLoaded', function () {
     document.documentElement.classList.add('reveal-on');
   }
 
-  // Conversion: one delegated listener covers every phone, SMS and WhatsApp
+  // Conversion: one delegated listener covers every phone, SMS, WhatsApp and email
   // link on the page, including ones added later. Nothing is tagged in the
   // markup - the location is read from the DOM.
   function linkLocation(a) {
@@ -1375,10 +1384,12 @@ addEventListener('DOMContentLoaded', function () {
   }
 
   document.addEventListener('click', function (e) {
-    var a = e.target.closest ? e.target.closest('a[href^="tel:"], a[href^="sms:"], a[href*="wa.me"]') : null;
+    var a = e.target.closest ? e.target.closest('a[href^="tel:"], a[href^="sms:"], a[href^="mailto:"], a[href*="wa.me"]') : null;
     if (!a || typeof gtag !== 'function') { return; }
     gtag('event', 'generate_lead', {
-      method: a.href.indexOf('wa.me') > -1 ? 'whatsapp' : (a.href.indexOf('sms:') === 0 ? 'sms' : 'phone'),
+      method: a.href.indexOf('wa.me') > -1 ? 'whatsapp'
+        : a.href.indexOf('mailto:') === 0 ? 'email'
+        : a.href.indexOf('sms:') === 0 ? 'sms' : 'phone',
       link_location: linkLocation(a)
     });
   });
