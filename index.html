@@ -73,7 +73,12 @@ addEventListener('DOMContentLoaded', function () {
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-SHR8YHQGHB');
+  // Production only: without the config call nothing is sent, so localhost
+  // sessions during development stop landing in the property. www redirects
+  // to the apex, so the bare hostname is the only one that ever serves the page.
+  if (location.hostname === 'chefclaudinei.com') {
+    gtag('config', 'G-SHR8YHQGHB');
+  }
 </script>
 
 <!-- `defer`, and in the <head> rather than at the foot of the body. Deferred
