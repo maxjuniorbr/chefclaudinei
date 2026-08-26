@@ -163,12 +163,19 @@ addEventListener('DOMContentLoaded', function () {
       <div class="about-imgs">
         <div class="chef-glow" aria-hidden="true"></div>
         <picture>
-          <!-- One size, not a srcset: the box never asks for more than ~235 CSS
-               px, so 600 covers 2x desktop and 3x phones with margin. The master
-               is 1344px wide (in chefclaudinei-masters); shipping more than 600
-               would be dead weight on a box this small. -->
+          <!-- One size, not a srcset: the box asks for ~252 CSS px at its widest,
+               so 800 covers 3x desktop and better than 4x on phones. The master
+               is 1610px wide (in chefclaudinei-masters); shipping more than 800
+               would be dead weight on a box this small.
+
+               The webp is what ~98% of visitors get, and it is the quality copy:
+               lossy q92 with alpha_quality 100, 44 dB against the lossless
+               original - visually identical, 127 KB. The png exists for the
+               fallback and for the JSON-LD `image`, and is palettised (mode P,
+               255 colours + tRNS) because a full RGBA png of this figure is
+               1.3 MB. Both carry the bottom fade baked into their alpha. -->
           <source type="image/webp" srcset="assets/img/chef-portrait.webp">
-          <img class="chef-cutout" src="assets/img/chef-portrait.png" width="600" height="1220"
+          <img class="chef-cutout" src="assets/img/chef-portrait.png" width="800" height="1891"
                loading="lazy" decoding="async" alt="Chef Claudinei standing with his arms crossed in his black chef's coat">
         </picture>
       </div>
