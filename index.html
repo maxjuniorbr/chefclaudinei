@@ -316,8 +316,8 @@ section { padding: 6.5rem 2rem; }
    across the base, then down both sides on fractional-DPR screens (the 1fr
    columns put every card edge on a fractional x). With both composited AND the
    overlay overshooting every covered edge, the seam has nowhere to open.
-   padding-bottom sits AFTER the padding shorthand, which would otherwise
-   reset it, and compensates so the copy does not move. */
+   The side and bottom padding values carry the +2px compensation inside the
+   shorthand itself, so the copy does not move. */
 .service-card-overlay { position: absolute; inset: 0 -2px -2px; transform: translateZ(0); background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.82) 38%, rgba(13,11,8,0.35) 68%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem calc(2.2rem + 2px) calc(2.2rem + 2px); transition: background var(--t-out) var(--e-soft); }
 .service-card:hover .service-card-overlay { background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.88) 38%, rgba(13,11,8,0.55) 68%, rgba(13,11,8,0.2) 100%); }
 .service-number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: rgba(201,151,58,0.18); line-height: 1; margin-bottom: 0.5rem; transition: color var(--t-out) var(--e-soft); }
@@ -497,14 +497,23 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
        `root` binds to the document scroller, which is what "the mosaic rises
        less than the page does" actually means. Do not simplify this back to
        `scroll()`. */
-    .hero-mosaic { animation: heroParallax linear both;
-      animation-timeline: scroll(root); animation-range: 0 100vh; }
+    /* A rejected scroll(root) declaration is not the same as an inactive
+       timeline: the animation shorthand's implicit reset (fill both,
+       duration 0) would still complete heroSink at its 100% keyframe,
+       leaving the hero content stuck at opacity 0. */
+    @supports (animation-timeline: scroll(root)) {
+      .hero-mosaic { animation: heroParallax linear both;
+        animation-timeline: scroll(root); animation-range: 0 100vh; }
+    }
     @keyframes heroParallax { to { transform: translateY(-12%); } }
 
     /* The hero content sinks into the smoke on its way out. Same `root` trap
        as .hero-mosaic above - .hero-content is also inside .hero. */
-    .hero-content { animation: heroSink linear both;
-      animation-timeline: scroll(root); animation-range: 0 90vh; }
+    /* Same guard, same reason as .hero-mosaic above. */
+    @supports (animation-timeline: scroll(root)) {
+      .hero-content { animation: heroSink linear both;
+        animation-timeline: scroll(root); animation-range: 0 90vh; }
+    }
     @keyframes heroSink {
       0%, 55% { opacity: 1; transform: none; }
       100%    { opacity: 0; transform: translateY(-40px); }
