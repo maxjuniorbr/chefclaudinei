@@ -1,0 +1,659 @@
+/* Chef Claudinei - stylesheet.
+
+   Loaded by index.html. Nothing here is generated: edit this file directly.
+
+   Jump to a section by searching for its marker, e.g. § HERO. The markers
+   are the map - line numbers go stale on the first edit, a token does not.
+   `grep -n '§' assets/css/site.css` prints the whole table of contents.
+
+     § FONTS
+     § BASE
+     § TOKENS
+     § SCROLL ANCHORING
+     § NAV
+     § HERO
+     § PROLOGUE
+     § SECTIONS
+     § ABOUT
+     § REVEAL
+     § SERVICES
+     § MENU
+     § GALLERY
+     § VIDEO
+     § CONTACT
+     § FOOTER
+     § RESPONSIVE
+     § SCROLL-LINKED
+     § SERVICES CHOREOGRAPHY
+     § REDUCED MOTION
+*/
+
+/* ========================================================================== */
+/* § FONTS
+   ----------------------------------------------------------------------- */
+/* Self-hosted latin subsets. Google serves one variable file per family and
+   style, so five files cover the ten faces the page uses - and two of those
+   faces (Playfair italic 900 in the hero title, Cormorant italic 300 in the
+   subtitle) were never in the old request at all: the browser was slanting
+   the roman by hand. */
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 700 900; font-display: swap; src: url(../fonts/playfair.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 700 900; font-display: swap; src: url(../fonts/playfair-italic.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Cormorant Garamond'; font-style: normal; font-weight: 300 400; font-display: swap; src: url(../fonts/cormorant.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Cormorant Garamond'; font-style: italic; font-weight: 300 400; font-display: swap; src: url(../fonts/cormorant-italic.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Montserrat'; font-style: normal; font-weight: 400 600; font-display: swap; src: url(../fonts/montserrat.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ========================================================================== */
+/* § BASE
+   ----------------------------------------------------------------------- */
+/* Every img carries width/height attributes so the browser can reserve the box
+   before it loads. Those attributes are presentational hints, so a rule that
+   sets only the width would leave the intrinsic height in place and stretch the
+   picture - this base rule is what keeps that from happening. */
+img { max-width: 100%; height: auto; }
+/* ========================================================================== */
+/* § TOKENS
+   ----------------------------------------------------------------------- */
+:root {
+  --black: #0d0b08;
+  --dark: #151209;
+  --charcoal: #2a2016;
+  --gold: #c9973a;
+  --gold-light: #e0b55a;
+  --cream: #f0e6d3;
+  --warm-white: #faf6ef;
+  --muted: #b0a08c;
+  --ember: #c44a18;
+
+  /* Motion. One duration per role and two curves, replacing the four ad-hoc
+     curves that used to coexist here with no criteria. --t-in and --t-out are
+     the asymmetric hover pair: enters fast (responsive), leaves slow (costly). */
+  --t-in:    120ms;
+  --t-out:   260ms;
+  --t-quick: 180ms;
+  --t-base:  620ms;
+  --t-slow: 1100ms;
+  --e-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --e-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+html { scroll-behavior: smooth; }
+/* ========================================================================== */
+/* § SCROLL ANCHORING
+   ----------------------------------------------------------------------- */
+/* Deliberately a little LESS than the bar is tall (4rem = 64px against a
+   69.6px bar). Stopping short of the bar left a 26px strip showing the previous
+   section's colour, so a jump between two sections of different shades read as
+   two horizontal lines: the bar's gold border, then the colour step. Landing
+   just behind the bar hides the section's top edge, the strip takes the new
+   colour, and only the border shows. The section's own 6.5rem of padding is
+   what keeps the label clear. */
+section[id] { scroll-margin-top: 4rem; }
+body { background: var(--black); color: var(--cream); font-family: 'Cormorant Garamond', Georgia, serif; overflow-x: hidden; }
+
+/* ========================================================================== */
+/* § NAV
+   ----------------------------------------------------------------------- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.3rem 3.5rem;
+  background: linear-gradient(to bottom, rgba(13,11,8,0.96) 0%, rgba(13,11,8,0) 100%);
+  transition: background var(--t-out) var(--e-soft),
+              backdrop-filter var(--t-out) var(--e-soft),
+              border-color var(--t-out) var(--e-soft);
+}
+/* 0.82 instead of 0.97: at nearly opaque the blur never shows and
+   backdrop-filter would be cost with no effect. */
+nav.scrolled { background: rgba(13,11,8,0.82) !important;
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border-bottom: 1px solid rgba(201,151,58,0.15); }
+.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--gold); text-decoration: none; letter-spacing: 0.06em; }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(240,230,211,0.75); text-decoration: none; transition: color var(--t-quick) var(--e-out); }
+.nav-links a:hover { color: var(--gold); }
+
+/* Menu button: only shows while the `js` class is on <html>, which means the
+   script ran to the end. Without it the plain list stays visible and clickable. */
+.menu-btn { display: none; background: none; border: 0; padding: 16px 12px; cursor: pointer; flex-direction: column; gap: 4px; }
+.menu-btn span { display: block; width: 22px; height: 1.5px; background: var(--gold); transition: transform var(--t-quick) var(--e-out), opacity var(--t-quick) var(--e-out); }
+.menu-btn.is-open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.menu-btn.is-open span:nth-child(2) { opacity: 0; }
+.menu-btn.is-open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+.skip-link { position: absolute; top: 0; left: -9999px; z-index: 300; background: var(--gold); color: var(--black); font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.9rem 1.4rem; text-decoration: none; }
+.skip-link:focus { left: 0; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* ========================================================================== */
+/* § HERO
+   ----------------------------------------------------------------------- */
+.hero { position: relative; min-height: max(100vh, 520px); display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
+.hero-mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 1fr 1fr; gap: 3px; opacity: 0.22; filter: sepia(25%); }
+.hero-mosaic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(13,11,8,0.25) 0%, rgba(13,11,8,0.72) 70%), linear-gradient(to bottom, rgba(13,11,8,0.6) 0%, rgba(13,11,8,0.15) 40%, rgba(13,11,8,0.92) 100%); }
+.hero-glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 65%, rgba(196,74,24,0.13) 0%, transparent 55%), radial-gradient(ellipse at 25% 80%, rgba(201,151,58,0.08) 0%, transparent 45%); animation: glowPulse 5s ease-in-out infinite alternate; }
+@keyframes glowPulse { from { opacity: 0.7; } to { opacity: 1; } }
+.hero-content { position: relative; z-index: 2; max-width: 100%; width: 820px; padding: 0 min(2rem, 5vw); }
+.eyebrow { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.4rem; }
+.eyebrow::before, .eyebrow::after { content: ''; display: block; width: 36px; height: 1px; background: var(--gold); opacity: 0.55; }
+.hero-title { font-family: 'Playfair Display', serif; font-size: min(clamp(3.2rem, 9vw, 7.5rem), 16vw); font-weight: 900; line-height: 0.92; color: var(--warm-white); margin-bottom: 0.2rem; }
+.hero-title span { display: block; }
+.hero-title em { display: block; font-style: italic; color: var(--gold); }
+.hero-sub { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 2.2vw, 1.55rem); font-weight: 300; font-style: italic; color: rgba(240,230,211,0.7); margin: 1.6rem 0 2.8rem; letter-spacing: 0.04em; }
+.hero-btns { display: inline-flex; gap: 1.1rem; flex-wrap: wrap; justify-content: center; }
+.btn { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer; border: none; display: inline-block; padding: 1rem 2.6rem; transition: transform var(--t-out) var(--e-out),
+                   background var(--t-out) var(--e-soft),
+                   color var(--t-out) var(--e-soft),
+                   border-color var(--t-out) var(--e-soft); }
+/* Asymmetry: leaving takes twice as long as entering. A fast enter reads as
+   responsive, a slow leave reads as expensive. Symmetric reads as generic. */
+.btn:hover, .btn:focus-visible { transition-duration: var(--t-in); }
+.btn:hover { transform: translateY(-2px); }
+.btn-gold { background: var(--gold); color: var(--black); }
+.btn-gold:hover { background: var(--gold-light); }
+.btn-ghost { background: transparent; color: var(--cream); border: 1px solid rgba(201,151,58,0.45); }
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+.scroll-hint { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; font-family: 'Montserrat', sans-serif; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); animation: scrollBounce 2.8s ease-in-out infinite; }
+.scroll-hint span { width: 1px; height: 38px; background: linear-gradient(to bottom, var(--gold), transparent); }
+@keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 55% { transform: translateX(-50%) translateY(7px); } }
+/* ========================================================================== */
+/* § PROLOGUE
+   ----------------------------------------------------------------------- */
+/* PROLOGUE. A wave from the centre out: the mosaic is 7 columns x 2 rows, so
+   |column - 4| gives the distance to the centre and becomes the stagger index.
+   Pure nth-child - no JS counts a single tile. */
+.prologue .hero-mosaic img { animation: tileIgnite var(--t-slow) var(--e-out) backwards;
+  animation-delay: calc(var(--i, 0) * 45ms); }
+.prologue .hero-mosaic img:nth-child(7n+1),
+.prologue .hero-mosaic img:nth-child(7n+7) { --i: 3; }
+.prologue .hero-mosaic img:nth-child(7n+2),
+.prologue .hero-mosaic img:nth-child(7n+6) { --i: 2; }
+.prologue .hero-mosaic img:nth-child(7n+3),
+.prologue .hero-mosaic img:nth-child(7n+5) { --i: 1; }
+.prologue .hero-mosaic img:nth-child(7n+4) { --i: 0; }
+@keyframes tileIgnite { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: none; } }
+
+.prologue .hero-overlay { animation: fadeIn var(--t-slow) var(--e-soft) 420ms backwards; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* The eyebrow condenses: the text arrives spaced out and settles. */
+.prologue .eyebrow { animation: eyebrowIn var(--t-base) var(--e-out) 560ms backwards; }
+@keyframes eyebrowIn { from { opacity: 0; letter-spacing: 0.5em; } to { opacity: 1; letter-spacing: 0.3em; } }
+
+/* The name rises through a mask, line by line. The gold italic comes after -
+   it is the signature, not one more line of the title. The final inset goes
+   negative at the bottom so descenders and shadow are not clipped. */
+.prologue .hero-title span,
+.prologue .hero-title em { animation: maskUp var(--t-slow) var(--e-out) backwards; }
+.prologue .hero-title span { animation-delay: 700ms; }
+.prologue .hero-title em   { animation-delay: 900ms; }
+@keyframes maskUp {
+  from { opacity: 0; transform: translateY(0.45em); clip-path: inset(0 0 100% 0); }
+  to   { opacity: 1; transform: none;               clip-path: inset(0 0 -20% 0); }
+}
+
+.prologue .hero-sub  { animation: riseIn var(--t-base) var(--e-out) 1150ms backwards; }
+.prologue .hero-btns .btn:nth-child(1) { animation: riseIn var(--t-base) var(--e-out) 1300ms backwards; }
+.prologue .hero-btns .btn:nth-child(2) { animation: riseIn var(--t-base) var(--e-out) 1400ms backwards; }
+@keyframes riseIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* Two animations: the entrance touches opacity only, so the infinite bounce -
+   which is what writes transform - never fights it. The bounce starts later. */
+.prologue .scroll-hint { animation: fadeIn var(--t-base) var(--e-out) 1600ms backwards,
+                                    scrollBounce 2.8s ease-in-out 1900ms infinite; }
+
+/* ========================================================================== */
+/* § SECTIONS
+   ----------------------------------------------------------------------- */
+section { padding: 6.5rem 2rem; }
+.inner { max-width: 1160px; margin: 0 auto; }
+.section-label { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.9rem; }
+.section-label::after { content: ''; width: 36px; height: 1px; background: var(--gold); opacity: 0.5; }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 700; line-height: 1.1; color: var(--warm-white); margin-bottom: 1.4rem; }
+.section-title em { font-style: italic; color: var(--gold); }
+.section-text { font-size: 1.15rem; font-weight: 300; line-height: 1.95; color: var(--muted); max-width: 580px; }
+
+/* ========================================================================== */
+/* § ABOUT
+   ----------------------------------------------------------------------- */
+#about { background: var(--dark); }
+/* The story comes first in the markup AND on the page: eye-tracking puts the
+   first fixations on the left, and the story is the high-information half. The
+   chef is angled to the viewer's left, so on the right he faces into the text
+   instead of off-page. No `order` here on purpose - reordering visually without
+   reordering the DOM leaves screen readers and Tab following the old sequence. */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.about-imgs { position: relative; height: 540px; }
+.about-imgs img { position: absolute; }
+
+/* Cut-out portrait. No frame and no crop on purpose: the point of a cut-out is
+   that it steps out of the boxes the other photos live in. The ember glow sits
+   behind it so the figure reads as lit by the fire the rest of the page sells. */
+.about-imgs .chef-cutout { bottom: 0; left: 0; right: 0; margin-inline: auto; width: auto; height: 100%; max-width: 78%;
+  object-fit: contain; border: 0; z-index: 2;
+  filter: drop-shadow(0 18px 30px rgba(0,0,0,0.6)); }
+/* The bottom fade that dissolves the photo's straight cut is baked into the
+   asset's alpha, NOT a mask-image here. A mask clips to the border box, and the
+   drop-shadow above spills past it: the mask guillotined that soft shadow into
+   a hard vertical line down both sides of the image box. Invisible while the
+   cut-out was wide enough to fill its box, obvious the moment a narrower
+   full-length figure left room for the shadow to spill. Baked in, there is no
+   box to clip against, and a browser without mask support gets the same fade. */
+.chef-glow { position: absolute; bottom: 4%; left: 0; right: 0; margin-inline: auto; width: 76%; aspect-ratio: 1; z-index: 1; pointer-events: none; }
+.chef-glow::after { content: ''; position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle, rgba(224,181,90,0.42) 0%, rgba(201,151,58,0.18) 45%, rgba(201,151,58,0) 72%);
+  animation: emberBreathe 9s ease-in-out infinite; }
+
+/* Ambient layer: the glow breathes, very slowly and at low amplitude. It is the
+   background life that keeps the composition from reading as a flat sticker. */
+@keyframes emberBreathe {
+  0%, 100% { transform: scale(1);    opacity: 0.85; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+
+/* ========================================================================== */
+/* § REVEAL
+   ----------------------------------------------------------------------- */
+/* Reveal. Everything hangs off `reveal-on`, which the script adds only where it
+   actually sets the observer up, and off `is-in`, which the observer adds per
+   element. Nothing is written inline any more: that is why the reduced-motion
+   block further down reaches all of this on its own.
+   The rule behind the table: the heavier the element, the shorter its travel
+   and the longer its duration. */
+.reveal-on [data-reveal] {
+  opacity: 0;
+  transition: opacity var(--t-base) var(--e-out), transform var(--t-base) var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-on [data-reveal="label"] { transform: translateX(-24px); }
+.reveal-on [data-reveal="title"] { transform: translateY(20px);  --reveal-delay: 80ms; }
+.reveal-on [data-reveal="text"]  { transform: translateY(12px);  --reveal-delay: 160ms; }
+.reveal-on [data-reveal="media"] {
+  transform: scale(1.04);
+  transition-duration: var(--t-slow);
+  --reveal-delay: calc(240ms + var(--i, 0) * 90ms);
+}
+/* The service cards rise as well as scale - a card that only scales reads as a
+   zoom, not an arrival. Scoped to the services grid so the gallery and the menu
+   keep the shared media reveal. Declared before `.is-in` below so the shared
+   `transform: none` reset still wins the tie: both selectors carry the same
+   specificity, and cascade order is the only thing deciding it. */
+/* translateY only, no scale: a fractional card scale (1.02 easing to 1) makes
+   the compositor round the drifting photo layer's clip and the overlay's raster
+   to different device pixels, and the photo peeks out as a hairline across the
+   card's bottom edge for the whole entrance. A pure translation moves both
+   layers by identical amounts and the seam cannot open. The rise reads the
+   same; the 2% zoom was invisible at entrance opacity anyway. */
+.reveal-on .services-grid [data-reveal="media"] { transform: translateY(32px); }
+.reveal-on [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* The chef lands after the collage: he is the hero, and the gap is what makes
+   him read as stepping forward instead of fading in. */
+.reveal-on .about-imgs .chef-cutout { opacity: 0; transform: translateY(28px);
+  transition: opacity var(--t-base) var(--e-out) 140ms, transform var(--t-base) var(--e-out) 140ms; }
+.reveal-on .about-imgs.is-in .chef-cutout { opacity: 1; transform: none; }
+.about-text { padding-right: 1rem; }
+.stat-row { display: flex; flex-wrap: wrap; gap: 3rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(201,151,58,0.2); }
+.stat strong { display: block; font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
+.stat span { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 0.4rem; display: block; }
+
+/* ========================================================================== */
+/* § SERVICES
+   ----------------------------------------------------------------------- */
+#services { background: var(--black); }
+.services-header { margin-bottom: 4rem; }
+/* A real gap, not the 2px tile seam the hero mosaic uses. Three services
+   photographed against dark backgrounds merge into one strip when they touch,
+   and the eye stops counting three offers. The parallax made it worse: adjacent
+   photos drift at slightly different offsets, so a hairline seam reads as
+   tearing rather than depth. The gap is also what separates the cards
+   vertically once they stack below 900px. */
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+/* clip-path, not overflow: hidden. The drifting photo is a composited layer,
+   and while the card's own entrance transform is mid-flight, overflow clipping
+   let that layer slip past the overlay's raster by a device pixel - a bright
+   hairline of photo across the card's base on every load. clip-path clips
+   composited children in the compositor, in the card's own transform space, so
+   the seam cannot open. It also removes a latent scroll container (overflow
+   makes one even when nothing scrolls), the same trap .hero and #contact hit.
+   The card has no border, so padding-box and border-box clips are identical. */
+.service-card { position: relative; clip-path: inset(0); height: 440px; }
+.service-card img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--t-slow) var(--e-out), filter var(--t-out) var(--e-out); filter: brightness(0.65) sepia(15%); }
+.service-card:hover img { transform: scale(1.06); filter: brightness(0.5) sepia(10%); }
+/* Four stops, not three. The old 0.2 at 60% left the copy sitting on raw
+   photo, and card 02's title wraps to two lines and climbs right into that
+   weak band - measured against the brightest pixel behind it, it was the
+   worst text on the page at 4.89:1. Contrast alone understates it: letters
+   over a busy photo are harder to read than the same ratio over flat colour.
+   The firmer ramp puts the worst case at 7.42:1 and still leaves the top
+   40% of the card as photograph. */
+/* The bottom stop is 1, not 0.95. At 0.95 five percent of the photograph came
+   through and the card's last rows measured (18, 15, 12) against a section
+   background of (13, 11, 8) - the card ended lighter than the page and the join
+   read as a hairline across the base of every card. Full opacity lands the base
+   on exactly the background colour and the edge disappears. Darker behind the
+   copy can only help the contrast the four stops below were tuned for.
+   The overlay overshoots the card's clip on the sides and bottom (top stays 0:
+   the gradient is transparent up there and the photo edge is meant to show),
+   and translateZ(0) promotes it into its own compositor layer: the drifting
+   photo IS one, and when only the photo was composited the two rasters rounded
+   the clip edge differently - a one-pixel line of photo showed through, first
+   across the base, then down both sides on fractional-DPR screens (the 1fr
+   columns put every card edge on a fractional x). With both composited AND the
+   overlay overshooting every covered edge, the seam has nowhere to open.
+   The side and bottom padding values carry the +2px compensation inside the
+   shorthand itself, so the copy does not move. */
+.service-card-overlay { position: absolute; inset: 0 -2px -2px; transform: translateZ(0); background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.82) 38%, rgba(13,11,8,0.35) 68%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2.2rem calc(2.2rem + 2px) calc(2.2rem + 2px); transition: background var(--t-out) var(--e-soft); }
+.service-card:hover .service-card-overlay { background: linear-gradient(to top, rgba(13,11,8,1) 0%, rgba(13,11,8,0.88) 38%, rgba(13,11,8,0.55) 68%, rgba(13,11,8,0.2) 100%); }
+.service-number { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: rgba(201,151,58,0.18); line-height: 1; margin-bottom: 0.5rem; transition: color var(--t-out) var(--e-soft); }
+.service-card:hover .service-number { color: rgba(201,151,58,0.35); }
+/* Two lines are reserved whether or not the title needs them. The overlay is
+   bottom-aligned, so a title that wraps pushes its own number up: card 02 wraps
+   and its 02 sat exactly one line - 32px - above the 01 and 03 beside it. An
+   explicit line-height rather than `normal`, so the reserved box is the same
+   height the browser actually renders. Released below 600px, where the cards
+   stack and there is no neighbour to line up with. */
+.service-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--warm-white); margin-bottom: 0.6rem; line-height: 1.35; min-height: 2.7em; }
+/* Always visible. It used to be revealed on :hover, but the card is a plain
+   div with nothing focusable inside, so keyboard users had no way to reach the
+   text at all above 900px - and it is the same copy the JSON-LD duplicates. */
+/* 0.85, not 0.6: the description sits over a photo, and the darker overlay
+   gradient only kicks in on :hover. At rest the worst card measured 3.31:1 -
+   below the 4.5:1 this size needs. 0.8 already clears it; 0.85 leaves room. */
+.service-desc { font-size: 1rem; font-weight: 300; color: rgba(240,230,211,0.85); line-height: 1.7; }
+.service-tag { display: inline-block; margin-top: 1rem; font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+
+/* ========================================================================== */
+/* § MENU
+   ----------------------------------------------------------------------- */
+/* Five groups flowing through columns, not a grid. On a 3x2 grid the first
+   row stretched to the tallest group and left a 600px hole under the shortest
+   one; break-inside keeps each group whole and the columns pack. Same idiom as
+   .gallery-masonry further down. */
+#menu { background: var(--dark); }
+.menu-header { max-width: 640px; margin-bottom: 4rem; }
+.menu-grid { columns: 3; column-gap: 3rem; }
+.menu-col { break-inside: avoid; margin-bottom: 3.4rem; }
+.menu-group { font-family: 'Montserrat', sans-serif; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); padding-bottom: 0.85rem; border-bottom: 1px solid rgba(201,151,58,0.28); margin-bottom: 1.5rem; }
+.menu-list { list-style: none; display: flex; flex-direction: column; gap: 1.15rem; }
+/* The site is in English, so a dish is named in English unless the Portuguese
+   word IS its name here - picanha, feijoada and farofa are what an American
+   Brazilian steakhouse prints, while arroz and salada verde are just foreign
+   words for rice and salad. Maionese was the sharpest case: it reads as
+   mayonnaise in English and the dish is a potato salad. The second line is
+   always English - it translates a Portuguese name, or it is dropped. Putting
+   the Brazilian name there for an English-named dish just smuggled the same
+   foreign words back in one line lower. */
+.dish { display: block; font-size: 1.18rem; color: var(--cream); line-height: 1.35; }
+.gloss { display: block; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; letter-spacing: 0.09em; line-height: 1.5; color: var(--muted); margin-top: 0.2rem; }
+.menu-custom { margin-top: 4.5rem; padding-top: 3rem; border-top: 1px solid rgba(201,151,58,0.2); text-align: center; }
+.menu-custom p { font-size: 1.35rem; font-weight: 300; font-style: italic; color: var(--gold); margin-bottom: 2rem; }
+
+/* ========================================================================== */
+/* § GALLERY
+   ----------------------------------------------------------------------- */
+#gallery { background: var(--black); }
+.gallery-header { margin-bottom: 3rem; }
+.gallery-masonry { columns: 4; column-gap: 8px; }
+.gallery-item { break-inside: avoid; margin-bottom: 8px; overflow: hidden; position: relative; }
+.gallery-item img { width: 100%; height: auto; display: block; transition: transform var(--t-base) var(--e-out), filter var(--t-out) var(--e-out); filter: brightness(0.88); }
+.gallery-item:hover img { transform: scale(1.04); filter: brightness(1.05); }
+.gallery-item::after { content: ''; position: absolute; inset: 0; background: rgba(201,151,58,0); transition: background var(--t-out) var(--e-soft); }
+.gallery-item:hover::after { background: rgba(201,151,58,0.07); }
+
+/* ========================================================================== */
+/* § VIDEO
+   ----------------------------------------------------------------------- */
+#video { background: var(--dark); }
+.video-wrapper { margin-top: 2.5rem; position: relative; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; }
+.video-frame { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border: 2px solid rgba(201,151,58,0.25); }
+.video-frame video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #0d0b08; }
+.video-caption { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); text-align: center; margin-top: 1.2rem; }
+
+/* ========================================================================== */
+/* § CONTACT
+   ----------------------------------------------------------------------- */
+/* clip-path, not overflow: hidden - same visual clip of the ::before glow
+   below, but it does not turn #contact into a scroll container. The section
+   label's rule below runs on view(), which takes no scroller override (there
+   is no view(root)); an ancestor scroll container is enough to freeze it, the
+   way .hero's overflow: hidden froze the hero's scroll() rules. */
+#contact { background: var(--black); position: relative; clip-path: inset(0); }
+#contact::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(201,151,58,0.07) 0%, transparent 60%), radial-gradient(ellipse at 20% 50%, rgba(196,74,24,0.06) 0%, transparent 55%); pointer-events: none; }
+.contact-item { display: flex; align-items: flex-start; gap: 1.2rem; margin-bottom: 2rem; }
+.contact-icon { width: 42px; height: 42px; min-width: 42px; border: 1px solid rgba(201,151,58,0.4); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1rem; }
+.contact-item-label { font-family: 'Montserrat', sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+.contact-item-value { font-size: 1.1rem; font-weight: 400; color: var(--cream); }
+.contact-item-value a { color: var(--cream); text-decoration: none; transition: color var(--t-quick) var(--e-out); }
+.contact-item-value a:hover { color: var(--gold); }
+
+/* ========================================================================== */
+/* § FOOTER
+   ----------------------------------------------------------------------- */
+footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); padding: 3rem 2rem; text-align: center; }
+.footer-inner { max-width: 1160px; margin: 0 auto; }
+.footer-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); margin-bottom: 0.4rem; }
+.footer-tagline { font-size: 0.95rem; font-weight: 300; font-style: italic; color: var(--muted); margin-bottom: 2rem; }
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; list-style: none; margin-bottom: 2rem; }
+.footer-links a { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color var(--t-quick) var(--e-out); }
+.footer-links a:hover { color: var(--gold); }
+/* Carries the phone number, so it is body text, not decoration: --muted at
+   0.68rem clears 4.5:1 where the old half-transparent 0.6rem sat at 2.02:1.
+   The number itself is a tel: link - underlined so it is not just a colour. */
+.footer-copy { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; letter-spacing: 0.12em; color: var(--muted); }
+.footer-copy a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.footer-copy a:hover { color: var(--gold); }
+
+/* ========================================================================== */
+/* § RESPONSIVE
+   ----------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  nav { padding: 1.2rem 1.5rem; }
+  /* 1.1rem, not 1.5: the wordmark is 155px and six links are 502px, so at
+     761px - the narrowest the full bar ever gets - 1.5rem left no gap. */
+  .nav-links { gap: 1.1rem; }
+  .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .about-text { padding-right: 0; }
+  .about-imgs { height: 360px; }
+  .services-grid { grid-template-columns: 1fr 1fr; }
+  .menu-grid { columns: 2; }
+  .gallery-masonry { columns: 2; }
+}
+/* The bar hands over to the button at 760px, not 600. The wordmark measures
+   155px and the six links 502px at the current size, so the full bar needs
+   720px; below that the wordmark wraps, which took the bar to 92px and pushed
+   "Chef Claudinei" flush against "About". 760 leaves 45px of gap. Only the bar
+   moves up - the 600px block below still owns the grids, the hero mosaic and
+   the section padding. */
+@media (max-width: 760px) {
+  /* This rule lives here, not in the 900px block, because it only holds while
+     the bar wraps - and the bar only wraps once the button owns it. No JS it
+     measures 146px at 390 and 100.2px at 750, the shortest it gets in this
+     band; 5.5rem clears both. From 761 to 900 the bar does not wrap and stands
+     65px, so the base 4rem is what keeps the anchor behind it there. */
+  html:not(.js) section[id] { scroll-margin-top: 5.5rem; }
+  /* At 325px and under the no-JS bar takes a third line and stands 195px, and
+     5.5rem stopped clearing it - the section label landed 35px behind the bar
+     instead of below it. The sixth link and the larger type are what pushed it
+     there. 8.5rem is 136px, so the margin is under the bar again. */
+  @media (max-width: 340px) { html:not(.js) section[id] { scroll-margin-top: 8.5rem; } }
+  nav { padding: 1rem 1.2rem; flex-wrap: wrap; row-gap: 0.6rem; }
+  /* no JS: the list wraps onto a second line and stays reachable. The padding
+     is here, not on the panel rule, so the fallback links are tappable too -
+     `.js .nav-links a` has higher specificity and still wins for the panel. */
+  .nav-links { gap: 0.9rem 1.1rem; flex-wrap: wrap; justify-content: flex-end; }
+  .nav-links a { display: inline-block; padding: 0.55rem 0.4rem; }
+  /* with JS: it becomes a panel under the bar, opened by the button */
+  .js .menu-btn { display: flex; }
+  /* max-height because the panel is absolute inside a fixed bar: anything
+     past the fold does not scroll, not by touch and not by Tab. Six links
+     of 48px plus the bar overshoot a phone in landscape (238px of viewport
+     at 667x325), which put Video and Contact out of reach. The 100% resolves
+     against the nav's own height; dvh so the address bar does not lie.
+     flex-wrap:nowrap because the no-JS rule above turns wrapping on: with a
+     max-height in force the column wrapped into a SECOND column instead of
+     overflowing, and Contact landed beside Video rather than below it.
+     justify-content for the same reason: that rule ends in flex-end, which
+     on an overflowing column pushes the content past the START edge - and
+     overflow above the start edge cannot be scrolled to. About was clipped
+     with maxScroll stuck at 0. Both resets belong to the panel, not the
+     wrapping fallback they are inherited from. */
+  .js .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; flex-wrap: nowrap; justify-content: flex-start; gap: 0; max-height: calc(100dvh - 100%); overflow-y: auto; overscroll-behavior: contain; background: rgba(13,11,8,0.98); border-bottom: 1px solid rgba(201,151,58,0.18); }
+  .js .nav-links.open { display: flex; }
+  /* flex-shrink:0 or the max-height above squeezes the rows instead of
+     scrolling them: six links compressed into 243px overlapped two at a
+     time and scrollHeight never exceeded clientHeight, so overflow-y had
+     nothing to scroll. */
+  .js .nav-links li { border-top: 1px solid rgba(201,151,58,0.1); flex-shrink: 0; }
+  .js .nav-links a { display: block; padding: 1.05rem 1.2rem; font-size: 0.85rem; }
+}
+@media (max-width: 600px) {
+  .services-grid { grid-template-columns: 1fr; }
+  .service-name { min-height: 0; }
+  .menu-grid { columns: 1; }
+  .menu-col { margin-bottom: 2.6rem; }
+  .gallery-masonry { columns: 2; }
+  section { padding: 4.5rem 1.2rem; }
+  .stat-row { gap: 2rem; }
+  .hero-mosaic { grid-template-columns: repeat(4, 1fr); }
+  .about-imgs { height: 280px; }
+}
+
+/* ========================================================================== */
+/* § SCROLL-LINKED
+   ----------------------------------------------------------------------- */
+/* Continuous layer. Guarded twice: by @supports, because a browser without
+   animation-timeline has to fall back to the IntersectionObserver reveal; and by
+   prefers-reduced-motion, because the `*` block further down zeroes duration but
+   does not stop a filled animation from holding its state. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* Depth: the mosaic rises less than the page does. Explicit `root`, not the
+       default `scroll()`/`scroll(nearest)`: .hero has `overflow: hidden` (it
+       clips the mosaic to the hero box), which makes .hero itself the nearest
+       scroll container - and .hero never scrolls, so the default timeline
+       would bind there and sit frozen at 0%, parsing fine and doing nothing.
+       `root` binds to the document scroller, which is what "the mosaic rises
+       less than the page does" actually means. Do not simplify this back to
+       `scroll()`. */
+    /* A rejected scroll(root) declaration is not the same as an inactive
+       timeline: the animation shorthand's implicit reset (fill both,
+       duration 0) would still complete heroSink at its 100% keyframe,
+       leaving the hero content stuck at opacity 0. */
+    @supports (animation-timeline: scroll(root)) {
+      .hero-mosaic { animation: heroParallax linear both;
+        animation-timeline: scroll(root); animation-range: 0 100vh; }
+    }
+    @keyframes heroParallax { to { transform: translateY(-12%); } }
+
+    /* The hero content sinks into the smoke on its way out. Same `root` trap
+       as .hero-mosaic above - .hero-content is also inside .hero. */
+    /* Same guard, same reason as .hero-mosaic above. */
+    @supports (animation-timeline: scroll(root)) {
+      .hero-content { animation: heroSink linear both;
+        animation-timeline: scroll(root); animation-range: 0 90vh; }
+    }
+    @keyframes heroSink {
+      0%, 55% { opacity: 1; transform: none; }
+      100%    { opacity: 0; transform: translateY(-40px); }
+    }
+
+    /* The label's rule draws itself. scaleX, not width: width is layout. */
+    .section-label::after { transform-origin: left;
+      animation: ruleDraw linear both;
+      animation-timeline: view(); animation-range: entry 20% entry 80%; }
+    @keyframes ruleDraw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    /* Continuous gallery, replacing the on/off. It goes on the CONTAINER, not
+       the <img>: the img carries the hover, and a filled animation would beat
+       the hover transition and kill the effect. */
+    .gallery-item { animation: galleryLift linear both;
+      animation-timeline: view(); animation-range: entry 0% cover 35%; }
+    @keyframes galleryLift {
+      from { opacity: 0.45; transform: scale(1.05); }
+      to   { opacity: 1;    transform: none; }
+    }
+
+    /* The ember warms as #about fills the screen. On .chef-glow, not on the
+       ::after: the ::after already runs emberBreathe and the two would fight
+       over opacity. */
+    .chef-glow { animation: emberSwell linear both;
+      animation-timeline: view(); animation-range: entry 30% cover 50%; }
+    @keyframes emberSwell { from { opacity: 0.35; } to { opacity: 1; } }
+  }
+}
+
+/* ========================================================================== */
+/* § SERVICES CHOREOGRAPHY
+   ----------------------------------------------------------------------- */
+/* Services choreography. The pin is gone, so this motion costs the visitor no
+   extra scrolling at all.
+   The photo drifts inside its own frame while the card crosses the viewport and
+   the big number drifts the OPPOSITE way at about a third of the amplitude.
+   Counter-motion is what makes a flat card read as having depth - two things
+   moving the same way read as one thing moving. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Declared on the card. The card's own `overflow: hidden` does NOT trap
+       this: a view-timeline measures the card's position inside the card's
+       nearest ancestor scroll container, and neither .services-grid, .inner nor
+       #services is one. Descendants only reference the name. */
+    .service-card { view-timeline: --card block; }
+
+    /* On <picture>, NEVER on the <img>. The img carries the :hover scale, and a
+       filled animation on the same element beats that transition and silently
+       kills the hover. The frame is oversized and offset vertically so the
+       drift can never expose an edge - but INSET 1px horizontally, on purpose:
+       the 1fr columns put every card edge on a fractional x, and on
+       fractional-DPR screens the clip's antialiased column let the composited
+       photo glow through as a thin bright line down both sides. With the photo
+       ending 1px short of the clip there is nothing bright in that column, and
+       the recess itself is invisible - the section background and the grid gap
+       are the same black. Measured: worst edge excess 15.4 lum before, 0 after. */
+    /* will-change only on the picture, not the number below. The photo is the
+       large, filtered raster - promoting it to its own layer is what actually
+       pays for itself. The number is a few characters of text; promoting a
+       layer for it would cost more in memory than the paint it saves, even
+       though numberDrift also runs every frame. */
+    .service-card picture { position: absolute; left: 1px; right: 1px; top: -8%;
+      height: 116%; display: block; will-change: transform;
+      animation: photoDrift linear both;
+      animation-timeline: --card; animation-range: cover 0% cover 100%; }
+    @keyframes photoDrift {
+      from { transform: translateY(-4%); }
+      to   { transform: translateY(4%); }
+    }
+
+    .service-number { animation: numberDrift linear both;
+      animation-timeline: --card; animation-range: cover 0% cover 100%; }
+    @keyframes numberDrift {
+      from { transform: translateY(6px); }
+      to   { transform: translateY(-6px); }
+    }
+  }
+}
+
+/* Reduced motion. One blanket rule on purpose: an enumerated list of animated
+   selectors ages badly, and a new element would silently ignore the setting.
+   The reveal itself is still switched off in the script, not reached from
+   here: with no observer there is nothing to run, and the `reveal-on` gate is
+   what keeps an interrupted script from leaving the page blank instead of
+   just unanimated. */
+/* ========================================================================== */
+/* § REDUCED MOTION
+   ----------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    /* backwards fill holds the FROM state through its delay - zeroing
+       duration alone still leaves the prologue's staggered elements
+       (700ms-1600ms) invisible until their delay elapses. */
+    animation-delay: 0s !important;
+  }
+  .btn:hover, .gallery-item:hover img, .service-card:hover img { transform: none; }
+}
