@@ -403,7 +403,10 @@ addEventListener('DOMContentLoaded', function () {
     <div class="video-wrapper">
       <div class="video-frame">
         <!-- preload="none" on purpose: nothing is fetched until someone presses
-             play, and the poster carries the frame until then. -->
+             play, and the poster carries the frame until then.
+             The VideoObject in the JSON-LD at the foot of the page mirrors this
+             element: its name is this title, its thumbnailUrl is this poster,
+             its contentUrl is this source. Change one, change the other. -->
         <video controls playsinline preload="none"
                title="Chef Claudinei churrasco highlight reel"
                width="1280" height="720"
@@ -720,6 +723,17 @@ addEventListener('DOMContentLoaded', function () {
       "jobTitle": "Chef",
       "image": "https://chefclaudinei.com/assets/img/chef-portrait.png",
       "worksFor": { "@id": "https://chefclaudinei.com/#business" }
+    },
+    {
+      "@type": "VideoObject",
+      "@id": "https://chefclaudinei.com/#highlight-video",
+      "name": "Chef Claudinei churrasco highlight reel",
+      "description": "Live fire, authentic flavors, unforgettable events: Chef Claudinei's Brazilian churrasco catering in action.",
+      "thumbnailUrl": "https://chefclaudinei.com/assets/img/video-poster.jpg",
+      "contentUrl": "https://chefclaudinei.com/assets/video/bbq-highlight.mp4",
+      "uploadDate": "2026-03-26T23:45:17-03:00",
+      "duration": "PT47.8S",
+      "publisher": { "@id": "https://chefclaudinei.com/#business" }
     },
     {
       "@type": "WebSite",
