@@ -294,7 +294,28 @@ section { padding: 6.5rem 2rem; }
   transition: opacity var(--t-base) var(--e-out) 140ms, transform var(--t-base) var(--e-out) 140ms; }
 .reveal-on .about-imgs.is-in .chef-cutout { opacity: 1; transform: none; }
 .about-text { padding-right: 1rem; }
-.stat-row { display: flex; flex-wrap: wrap; gap: 3rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(201,151,58,0.2); }
+/* gap 2rem, not 3rem. The three labels measure 431px of type between them, so
+   the row needs 431 + 2 gaps. At 3rem that was 527px against the 524px the text
+   column settles at once `.inner` hits its max width - it wrapped to 2+1 by
+   THREE pixels, on the widest screens. The tell that nobody chose it: below
+   900px the grid collapses to one column, the row gets 781px, and the three fit
+   again. The big screen was showing the worse layout.
+
+   2rem brings it to 495px and leaves 29px of slack - enough to survive font
+   rendering that measures a little wider.
+
+   This does NOT make three-across universal, and no gap value would. Measured:
+
+     >= ~1180px   column 524px (capped)   fits, 29px to spare
+     900-1180px   column 417-480px        2+1, short by 15-78px
+     600-900px    column ~781px           fits easily (one-column grid)
+     <= ~600px    column 337px            2+1, short by 158px
+
+   Between 900 and 1180 the two-column grid simply cannot hold 431px of labels;
+   closing that would mean shrinking the label type, and the near-miss margins
+   that produced the original three-pixel bug are exactly what to avoid here.
+   2+1 there is the honest answer, not an accident. */
+.stat-row { display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(201,151,58,0.2); }
 .stat strong { display: block; font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
 .stat span { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 0.4rem; display: block; }
 
@@ -515,7 +536,6 @@ footer { background: var(--dark); border-top: 1px solid rgba(201,151,58,0.15); p
   .menu-col { margin-bottom: 2.6rem; }
   .gallery-masonry { columns: 2; }
   section { padding: 4.5rem 1.2rem; }
-  .stat-row { gap: 2rem; }
   .hero-mosaic { grid-template-columns: repeat(4, 1fr); }
   .about-imgs { height: 280px; }
 }
